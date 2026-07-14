@@ -1,0 +1,48 @@
+{
+  "brands": [
+    {
+      "id": "pagani",
+      "name": "Pagani",
+      "country": "Italy",
+      "founded": 1992,
+      "tagline": "Art and science — San Cesario sul Panaro",
+      "data": "data/pagani.json",
+      "hero": {
+        "kicker": "HYPERCAR ARCHIVE · SAN CESARIO SUL PANARO",
+        "titlePrefix": "La Collezione",
+        "titleAccent": "Pagani",
+        "sub": "Every production model, limited edition, and significant one-off — 1999 to today. Open a card for the full build plaque, story, engineering, and photo gallery."
+      },
+      "theme": {
+        "accent": "#c6a15b",
+        "familyAccents": {
+          "Zonda": "#c6a15b",
+          "Huayra": "#7fa3c4",
+          "Utopia": "#8fae8b"
+        },
+        "background": "#131417",
+        "panel": "#1b1d22",
+        "ivory": "#ece5d8",
+        "displayFont": "'Marcellus', 'Times New Roman', serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave",
+        "motif": "quad-exhaust"
+      }
+    },
+    {
+      "id": "koenigsegg",
+      "name": "Koenigsegg",
+      "country": "Sweden",
+      "status": "planned",
+      "theme_direction": "Icy Scandinavian minimalism — ghost-squadron heritage (the Ängelholm ghost symbol), cold whites/steel blues, geometric sans display font, aerospace precision"
+    },
+    {
+      "id": "ferrari",
+      "name": "Ferrari",
+      "country": "Italy",
+      "status": "planned",
+      "theme_direction": "Rosso corsa on near-black, racing heritage serif or Modena-style display, giallo accents, tifosi energy"
+    }
+  ]
+}

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Collezione — Pagani Database</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --carbon:#131417; --carbon2:#1b1d22; --panel:#202329; --line:#2e323a;
+  --ivory:#ece5d8; --muted:#9a948a; --faint:#6b6760;
+  --zonda:#c6a15b; --huayra:#7fa3c4; --utopia:#8fae8b;
+  --display:'Marcellus', 'Times New Roman', serif;
+  --body:'Inter', -apple-system, system-ui, sans-serif;
+  --mono:'IBM Plex Mono', ui-monospace, monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scrollbar-color:#3a3f48 var(--carbon)}
+body{background:var(--carbon);color:var(--ivory);font-family:var(--body);font-size:15px;line-height:1.55;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255,255,255,.012) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.15) 0 2px, transparent 2px 6px);}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--zonda);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- header ---------- */
+header{max-width:1240px;margin:0 auto;padding:52px 28px 8px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.28em;color:var(--faint);text-transform:uppercase;display:flex;align-items:center;gap:14px}
+.pipes{display:inline-flex;gap:4px}
+.pipes i{width:8px;height:8px;border:1.5px solid var(--zonda);border-radius:50%;display:block}
+.pipes i:nth-child(2),.pipes i:nth-child(3){transform:translateY(3px)}
+h1{font-family:var(--display);font-size:clamp(38px,6vw,64px);font-weight:400;letter-spacing:.02em;margin-top:10px;line-height:1.05}
+h1 em{font-style:normal;color:var(--zonda)}
+.sub{color:var(--muted);max-width:64ch;margin-top:10px;font-size:14.5px}
+
+/* ---------- controls ---------- */
+.controls{max-width:1240px;margin:26px auto 0;padding:0 28px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.chip{background:transparent;border:1px solid var(--line);color:var(--muted);padding:7px 15px;border-radius:999px;font-size:13px;letter-spacing:.02em;transition:all .15s}
+.chip:hover{border-color:var(--faint);color:var(--ivory)}
+.chip.on{color:var(--carbon);font-weight:600}
+.chip.on[data-f="all"]{background:var(--ivory);border-color:var(--ivory)}
+.chip.on[data-f="Zonda"]{background:var(--zonda);border-color:var(--zonda)}
+.chip.on[data-f="Huayra"]{background:var(--huayra);border-color:var(--huayra)}
+.chip.on[data-f="Utopia"]{background:var(--utopia);border-color:var(--utopia)}
+.chip.on[data-f="road"],.chip.on[data-f="track"]{background:var(--ivory);border-color:var(--ivory)}
+.spacer{flex:1}
+select,.search{background:var(--carbon2);border:1px solid var(--line);color:var(--ivory);border-radius:8px;padding:8px 12px;font-size:13px;font-family:var(--body)}
+.search{width:210px}
+.search::placeholder{color:var(--faint)}
+.count{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.1em}
+
+/* ---------- grid ---------- */
+.grid{max-width:1240px;margin:26px auto 90px;padding:0 28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.card{background:var(--carbon2);border:1px solid var(--line);border-radius:10px;overflow:hidden;text-align:left;color:inherit;display:flex;flex-direction:column;transition:transform .18s, border-color .18s}
+.card:hover{transform:translateY(-3px);border-color:var(--faint)}
+.cover{aspect-ratio:16/9.5;position:relative;overflow:hidden;background:
+  radial-gradient(120% 90% at 20% 0%, rgba(255,255,255,.06), transparent 55%),
+  repeating-linear-gradient(45deg, #17181c 0 3px, #1d1f24 3px 6px)}
+.cover img{width:100%;height:100%;object-fit:cover;display:block}
+.cover .mono-mark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:64px;color:rgba(236,229,216,.10);letter-spacing:.05em;user-select:none}
+.cover .fam-spine{position:absolute;left:0;top:0;bottom:0;width:4px}
+.card[data-fam="Zonda"] .fam-spine{background:var(--zonda)}
+.card[data-fam="Huayra"] .fam-spine{background:var(--huayra)}
+.card[data-fam="Utopia"] .fam-spine{background:var(--utopia)}
+.cbody{padding:15px 16px 16px;display:flex;flex-direction:column;gap:9px;flex:1}
+.crow{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.cname{font-family:var(--display);font-size:19px;line-height:1.2}
+.cyear{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.cstats{display:flex;gap:14px;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:auto}
+.cstats b{color:var(--ivory);font-weight:500}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:10.5px;font-family:var(--mono);letter-spacing:.06em;padding:3px 8px;border-radius:4px;border:1px solid var(--line);color:var(--muted);text-transform:uppercase}
+.tag.track{border-color:#8a4b4b;color:#d29090}
+.tag.oneoff{border-color:#7a6a3f;color:var(--zonda)}
+
+/* ---------- detail overlay ---------- */
+.overlay{position:fixed;inset:0;background:rgba(10,11,13,.72);backdrop-filter:blur(6px);display:none;z-index:50;overflow-y:auto;padding:4vh 16px}
+.overlay.open{display:block}
+.sheet{max-width:920px;margin:0 auto;background:var(--carbon2);border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative}
+.close{position:sticky;top:14px;margin-left:calc(100% - 54px);z-index:5;background:rgba(19,20,23,.85);border:1px solid var(--line);color:var(--ivory);width:38px;height:38px;border-radius:50%;font-size:17px;line-height:1}
+.hero{aspect-ratio:16/8;position:relative;background:
+  radial-gradient(120% 100% at 25% 0%, rgba(255,255,255,.07), transparent 55%),
+  repeating-linear-gradient(45deg, #16171b 0 3px, #1c1e23 3px 6px);margin-top:-52px}
+.hero img{width:100%;height:100%;object-fit:cover;display:block}
+.hero .mono-mark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:120px;color:rgba(236,229,216,.08)}
+.hero .fam-band{position:absolute;left:0;right:0;bottom:0;height:3px}
+.sheet[data-fam="Zonda"] .fam-band, .sheet[data-fam="Zonda"] .plaque-title{color:var(--zonda)} .sheet[data-fam="Zonda"] .fam-band{background:var(--zonda)}
+.sheet[data-fam="Huayra"] .fam-band{background:var(--huayra)} .sheet[data-fam="Huayra"] .plaque-title{color:var(--huayra)}
+.sheet[data-fam="Utopia"] .fam-band{background:var(--utopia)} .sheet[data-fam="Utopia"] .plaque-title{color:var(--utopia)}
+.inner{padding:30px 34px 44px}
+.dhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px;margin-bottom:6px}
+.dname{font-family:var(--display);font-size:clamp(28px,4vw,40px);line-height:1.1}
+.dmeta{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.08em}
+.dtags{margin:8px 0 22px}
+
+/* plaque */
+.plaque{border:1px solid var(--line);border-radius:10px;background:
+  linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.12));
+  padding:20px 22px;margin-bottom:30px}
+.plaque-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:14px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px 22px}
+.pitem{border-left:1px solid var(--line);padding-left:12px}
+.plab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.pval{font-size:15px;margin-top:3px;line-height:1.35}
+.pval.big{font-family:var(--display);font-size:22px}
+.pwide{grid-column:1/-1}
+
+/* prose */
+.sect{margin-bottom:26px}
+.sect h3{font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:.02em;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.sect h3::after{content:"";flex:1;height:1px;background:var(--line)}
+.sect p{color:#cfc9bd;max-width:74ch}
+
+/* gallery */
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
+.gitem{position:relative;aspect-ratio:4/3;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.gitem img{width:100%;height:100%;object-fit:cover;display:block}
+.gdel{position:absolute;top:6px;right:6px;background:rgba(10,11,13,.8);border:1px solid var(--line);color:var(--ivory);border-radius:6px;width:26px;height:26px;font-size:13px;display:none}
+.gitem:hover .gdel{display:block}
+.addrow{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.addrow input{flex:1;min-width:220px;background:var(--carbon);border:1px solid var(--line);color:var(--ivory);border-radius:8px;padding:9px 12px;font-size:13px}
+.addrow input::placeholder{color:var(--faint)}
+.btn{background:var(--ivory);color:var(--carbon);border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600}
+.btn:hover{opacity:.9}
+.hint{font-size:12px;color:var(--faint);margin-top:8px}
+.gempty{font-size:13px;color:var(--faint);border:1px dashed var(--line);border-radius:8px;padding:16px;text-align:center;margin-top:12px}
+.gfig{display:flex;flex-direction:column;gap:5px}
+.gcredit{font-family:var(--mono);font-size:10.5px;color:var(--faint);line-height:1.4;cursor:text;min-height:15px}
+.gcredit:hover{color:var(--muted)}
+.gcredit.empty{font-style:italic}
+.gcredit input{width:100%;background:var(--carbon);border:1px solid var(--line);color:var(--ivory);border-radius:6px;padding:5px 8px;font-size:11px;font-family:var(--mono)}
+.hero-credit{position:absolute;right:10px;bottom:10px;background:rgba(10,11,13,.72);padding:4px 10px;border-radius:6px;font-family:var(--mono);font-size:10px;color:var(--muted);max-width:70%;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--line);color:var(--ivory);padding:10px 18px;border-radius:10px;font-size:13px;display:none;z-index:99}
+@media(max-width:640px){.inner{padding:22px 18px 34px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker"><span class="pipes"><i></i><i></i><i></i><i></i></span> HYPERCAR ARCHIVE · SAN CESARIO SUL PANARO</div>
+  <h1>La Collezione <em>Pagani</em></h1>
+  <p class="sub">Every production model, limited edition, and significant one-off — 1999 to today. Open a card for the full build plaque, story, engineering, and photo gallery.</p>
+</header>
+
+<div class="controls">
+  <button class="chip on" data-f="all">All</button>
+  <button class="chip" data-f="Zonda">Zonda</button>
+  <button class="chip" data-f="Huayra">Huayra</button>
+  <button class="chip" data-f="Utopia">Utopia</button>
+  <button class="chip" data-f="road">Road legal</button>
+  <button class="chip" data-f="track">Track only</button>
+  <span class="spacer"></span>
+  <input class="search" id="q" type="text" placeholder="Search models…">
+  <select id="sort">
+    <option value="year">Sort · Year</option>
+    <option value="hp">Sort · Horsepower</option>
+    <option value="name">Sort · Name</option>
+  </select>
+  <span class="count" id="count"></span>
+  <button class="chip" onclick="exportShareable()" title="Download a standalone copy with your photos baked in — send it to anyone">Share copy</button>
+  <button class="chip" onclick="exportPhotos()" title="Download all photos + credits as a backup file">Backup</button>
+  <button class="chip" onclick="document.getElementById('restorefile').click()" title="Restore photos from a backup file">Restore</button>
+  <input id="restorefile" type="file" accept="application/json,.json" hidden onchange="importPhotos(this.files[0])">
+</div>
+
+<main class="grid" id="grid"></main>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+  <div class="sheet" id="sheet"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/*SEED_SLOT*/
+const PAGE_SRC = (()=>{ try{ return '<!DOCTYPE html>\n' + document.documentElement.outerHTML; }catch(e){ return null; } })();
+const SEED = (typeof window.__SEED__ === 'object' && window.__SEED__) ? window.__SEED__ : null;
+
+const CARS = [{"slug": "zonda-c12", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda C12", "year": 1999, "price": "~$320,000 (original retail)", "production": "5 (1 used for crash testing)", "engine": "6.0L NA V12 — Mercedes-Benz M120", "powertrain": "ICE, 6-speed manual", "hp": 394, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 185, "zeroSixty": 4.2, "torque": 420, "weight": 2756, "story": "The car that started it all. Horacio Pagani, a former Lamborghini composites chief who emigrated from Argentina, spent seven years building his dream car. It was originally to be called the 'Fangio F1' in honor of five-time F1 champion Juan Manuel Fangio, a fellow Argentine and mentor who personally helped Horacio secure Mercedes-Benz engines. When Fangio died in 1995, Horacio renamed the car 'Zonda' after the warm wind that blows down the Andes, feeling it would be wrong to put Fangio's name on a car he never saw finished. The 'C' honors Horacio's wife Cristina; 12 for the cylinders.", "engineering": "Debuted Pagani's signature carbon fiber construction at a time when most rivals still used aluminum. Powered by the Mercedes-Benz M120 V12 that Fangio helped arrange. Design inspired by jet fighters and the Sauber-Mercedes Group C Silver Arrows, including the now-iconic circular quad exhaust. The first chassis was used for crash testing and later restored in-house for the Zonda's 20th anniversary.", "records": "Stunned the 1999 Geneva Motor Show as a debut car from an unknown boutique manufacturer that could genuinely rival Ferrari and Lamborghini. Only 5 were built, making an original C12 one of the rarest and most historically significant Paganis."}, {"slug": "zonda-c12-s", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda C12 S", "year": 2000, "price": "~$350,000 (original retail)", "production": "15 (estimated)", "engine": "7.0L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 542, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 208, "zeroSixty": 3.7, "torque": 553, "weight": 2755, "story": "The rapid follow-up that proved the C12 was no fluke. Pagani asked AMG for more power, and they delivered a larger 7.0L version of the V12.", "engineering": "AMG-tuned M297 7.0L V12 with 542 hp mated to a 6-speed manual. Revised aerodynamics with a longer nose and new rear wing over the original C12.", "records": "Cemented Pagani's reputation among collectors; period reviews praised it as better built than contemporary Ferraris."}, {"slug": "zonda-s-7-3", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda S 7.3", "year": 2002, "price": "~$450,000 (original retail)", "production": "~17 (estimated)", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 547, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 214, "zeroSixty": 3.7, "torque": 553, "weight": 2755, "story": "The Zonda hits its stride. The engine grew to the definitive 7.3L displacement — the same basic unit that would power Zondas for the next two decades.", "engineering": "The 7.3L M297 V12 (derived from the engine in the Mercedes SL 73 AMG) added traction control for the first time on a Zonda. Still a pure 6-speed manual with no flappy paddles.", "records": "The 7.3L M297 became one of the longest-serving and most beloved engines in hypercar history — Pagani was still building cars around it 20+ years later."}, {"slug": "zonda-roadster", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda Roadster", "year": 2003, "price": "~$667,000 (original retail)", "production": "40", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 547, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 214, "zeroSixty": 3.7, "torque": 553, "weight": 2822, "story": "Pagani's first open-top car, created by popular demand and limited to 40 made-to-measure examples.", "engineering": "Remarkably, the roadster required minimal structural reinforcement thanks to the inherent stiffness of the carbon monocoque — it weighs only slightly more than the coupe. Removable carbon roof panel and canvas side curtains.", "records": "At 40 units it was one of the 'higher volume' Zondas — which ironically made it a favorite donor car for later one-off rebuilds by Pagani's factory."}, {"slug": "zonda-f", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda F", "year": 2005, "price": "~$741,000 (original retail)", "production": "25", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 594, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 214, "zeroSixty": 3.5, "torque": 561, "weight": 2712, "story": "Widely considered the definitive Zonda. The 'F' honors Juan Manuel Fangio — the tribute Horacio had wanted to make since day one, finally realized in the car many call the greatest analog supercar ever built.", "engineering": "594 hp from the 7.3L V12 (641 hp with the Clubsport package), a 6-speed manual, hydraulic steering, and no stability control in its purest form. Revised aero with a new front end, additional headlight, and larger rear wing. Optional carbon-ceramic brakes — a first for Pagani.", "records": "Regularly tops 'greatest supercar of all time' lists. In 2007 a Zonda F Clubsport lapped the Nürburgring in 7:27.82 — a production car record at the time. Values have climbed toward $10M+ for the best examples."}, {"slug": "zonda-roadster-f", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda Roadster F", "year": 2006, "price": "~$825,000 (original retail)", "production": "25", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 641, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 214, "zeroSixty": 3.4, "torque": 575, "weight": 2712, "story": "The open-top version of the definitive Zonda, limited to 25 units.", "engineering": "With the optional Clubsport package it made 641 hp while weighing the same as the coupe thanks to the carbon-titanium tub. Many consider it the ultimate expression of the analog V12 roadster.", "records": "One of the most valuable open Paganis; pristine examples trade well above $10M today."}, {"slug": "zonda-monza", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda Monza", "year": 2004, "price": "Undisclosed (one-off commission)", "production": "1", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed sequential", "hp": 591, "drivetrain": "RWD", "downforce": "Track aero package (figures not published)", "roadLegal": "No", "status": "One-off", "topSpeed": "Not published", "zeroSixty": 3.3, "torque": 561, "weight": 2601, "story": "A one-off track special commissioned in 2004 by an American customer who wanted a Zonda with zero compromises for circuit use — a preview of the philosophy that later produced the Zonda R.", "engineering": "Based on the Zonda S 7.3 with a stripped interior, sequential-shift gearbox, revised engine tuning to 591 hp, and an aggressive fixed aero package.", "records": "Recognized as the first track-only Pagani, the conceptual grandfather of the Zonda R, Revolución, and Huayra R."}, {"slug": "zonda-cinque", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda Cinque", "year": 2009, "price": "~$1,460,000 (original retail)", "production": "5", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed sequential", "hp": 669, "drivetrain": "RWD", "downforce": "~1,650 lbs @ 186 mph (est.)", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 217, "zeroSixty": 3.4, "torque": 575, "weight": 2668, "story": "Born when Pagani's Hong Kong dealer SPS begged the factory to build a road-legal version of the track-only Zonda R. Pagani agreed to just five cars — 'Cinque' is Italian for five. It was meant to be the Zonda's grand finale; instead, demand kept the Zonda alive for another decade.", "engineering": "The first car ever built with Carbo-Titanium — carbon fiber woven with titanium strands for greater strength, now a Pagani signature. Featured a 678 hp version of the 7.3L V12, a 6-speed sequential gearbox, active aerodynamics, and a roof scoop feeding the engine.", "records": "Introduced Carbo-Titanium to the world, arguably Pagani's single most important materials innovation. One of the most sought-after Zondas; examples have changed hands for well north of $5M."}, {"slug": "zonda-cinque-roadster", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda Cinque Roadster", "year": 2010, "price": "~$1,850,000 (original retail)", "production": "5", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed sequential", "hp": 669, "drivetrain": "RWD", "downforce": "~1,650 lbs @ 186 mph (est.)", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 217, "zeroSixty": 3.4, "torque": 575, "weight": 2711, "story": "The open-air sister to the Cinque, also limited to five examples at the request of the same Hong Kong dealer.", "engineering": "Identical Carbo-Titanium construction and 678 hp drivetrain to the coupe, with a removable roof. Weight penalty over the coupe: almost nothing, thanks to the tub's stiffness.", "records": "One of only five — among the rarest and most valuable open-top Zondas in existence."}, {"slug": "zonda-tricolore", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda Tricolore", "year": 2010, "price": "~$1,600,000 (original retail)", "production": "3", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed sequential", "hp": 670, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 217, "zeroSixty": 3.4, "torque": 575, "weight": 2668, "story": "Built as a tribute to the Frecce Tricolori, the Italian Air Force aerobatic display team, on their 50th anniversary — Italian flag stripes run the length of the car and the aero mimics their Aermacchi stunt planes.", "engineering": "Based on Cinque underpinnings with Carbo-Titanium construction and a 670 hp 7.3L V12. Features a distinctive wing element behind the cockpit inspired by the display aircraft.", "records": "Originally planned as a single car, demand stretched it to three. Asking price when new was around $1.6M — a bargain in hindsight."}, {"slug": "zonda-r", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda R", "year": 2009, "price": "~$1,850,000 (original retail)", "production": "15", "engine": "6.0L NA V12 — Mercedes-AMG M120 (CLK GTR-derived)", "powertrain": "ICE, 6-speed sequential dog-ring", "hp": 740, "drivetrain": "RWD", "downforce": "~3,300 lbs @ 186 mph (est.)", "roadLegal": "No", "status": "Discontinued (track only)", "topSpeed": 233, "zeroSixty": 2.7, "torque": 524, "weight": 2359, "story": "Pagani's first no-rules statement: a track-only monster sharing only around 10% of its parts with road Zondas, built as a rolling laboratory for future models. Horacio admitted it doubled as a test bed for what became the Huayra.", "engineering": "Powered not by the 7.3 but by a 6.0L race-derived Mercedes-AMG V12 from the CLK GTR Le Mans program, producing 740 hp at 2,359 lbs dry. Sequential 6-speed dog-ring gearbox, pushrod suspension, and a full aero package generating well over a ton of downforce.", "records": "On 30 June 2010, the Zonda R lapped the Nürburgring Nordschleife in 6:47 — beating the Ferrari 599XX and setting the benchmark for production-based track cars. That lap made the Zonda R a legend and remains one of the most famous Nürburgring runs ever."}, {"slug": "zonda-revoluci-n", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda Revolución", "year": 2013, "price": "~$2,900,000 (original retail, €2.2M)", "production": "5", "engine": "6.0L NA V12 — Mercedes-AMG M120 (CLK GTR-derived)", "powertrain": "ICE, 6-speed sequential dog-ring", "hp": 789, "drivetrain": "RWD", "downforce": ">3,300 lbs @ 186 mph (est.)", "roadLegal": "No", "status": "Discontinued (track only)", "topSpeed": 233, "zeroSixty": 2.6, "torque": 538, "weight": 2359, "story": "The final evolution of the track-only Zonda line — 'Revolution' — built for customers who felt the Zonda R wasn't extreme enough.", "engineering": "Carbo-Titanium monocoque, engine turned up to 789 hp, and an F1-style DRS (drag reduction system) on the rear wing — the driver can flatten the wing on straights at the push of a button. Weight held at 2,359 lbs dry.", "records": "Horacio claimed it was the fastest Zonda ever made. At €2.2M it was also, at the time, the most expensive. Only 5 exist."}, {"slug": "zonda-760rs-la-bestia", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda 760RS 'La Bestia'", "year": 2012, "price": "Undisclosed (one-off commission)", "production": "1", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 760, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "When a customer asked for 'a Zonda R for the road,' Pagani spent a year creating this — nicknamed 'La Bestia' (The Beast) inside the factory. It launched the entire 760-series of bespoke Zondas.", "engineering": "A 760 hp version of the 7.3L V12 — the most powerful naturally aspirated Zonda spec — with a 6-speed manual, Zonda R-inspired aero, and road homologation.", "records": "The car that proved there was insatiable demand for one-off Zondas, spawning a decade of factory rebuilds and commissions after the model had officially 'ended.'"}, {"slug": "zonda-760lh-lewis-hamilton", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda 760LH (Lewis Hamilton)", "year": 2012, "price": "Undisclosed (one-off commission)", "production": "1", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 760, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "F1 champion Lewis Hamilton saw the 760RS and wanted one — but with a manual gearbox. 'LH' are his initials. He famously described it as beautiful but 'terrible to drive' in the wet, which only added to its mystique.", "engineering": "Identical 760 hp spec to the RS with a bespoke purple exterior and Hamilton's requested 6-speed manual.", "records": "Probably the most famous single Zonda in the world due to its owner. Frequently photographed in Monaco during Hamilton's ownership."}, {"slug": "zonda-764-passione", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda 764 Passione", "year": 2012, "price": "Undisclosed (one-off commission)", "production": "1", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 764, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "A one-off commission in the 760 series, with the customer requesting a slight bump over 760 hp — hence 764.", "engineering": "764 hp 7.3L V12, manual gearbox, bespoke carbon livery.", "records": "One of the small handful of 760-series cars, each unique to its commissioning owner."}, {"slug": "zonda-uno", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda Uno", "year": 2011, "price": "Undisclosed (one-off rebuild)", "production": "1", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed sequential", "hp": 669, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3.4, "torque": 575, "weight": 2668, "story": "Commissioned by Sheikh Abdullah bin Nasser Al-Thani of the Qatari royal family, famous for his turquoise supercar collection. Started life as a Zonda F Roadster that was crashed and returned to the factory — Pagani rebuilt it from the ground up as a one-off. 'Uno' is Italian for 'one.'", "engineering": "Blends Zonda R aero elements with Cinque-spec mechanicals (669 hp, sequential gearbox) under the sheikh's signature turquoise paint with matching blue leather interior.", "records": "The car that established Pagani's now-famous business of resurrecting crashed Zondas as bespoke one-offs — a program that kept the Zonda alive years after production 'ended.'"}, {"slug": "zonda-riviera", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda Riviera", "year": 2015, "price": "~$5,500,000 (estimated value)", "production": "1 (rebuilt from Zonda F)", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed sequential", "hp": 764, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "A crashed Zonda F reborn in 2015 as one of the most extreme road Zondas, finished in white with exposed carbon and blue accents.", "engineering": "Upgraded to 764 hp with a sequential gearbox and an aero package drawing on the Cinque and R.", "records": "Widely valued around $5.5M; one of the most photographed one-off Zondas, long resident in the UAE."}, {"slug": "zonda-md", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda MD", "year": 2016, "price": "Undisclosed (one-off rebuild)", "production": "1 (rebuilt from Zonda F)", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 760, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "A destroyed Zonda F rebuilt by the factory in 2016 to full 760 specification for a customer with the initials MD.", "engineering": "760 hp, 6-speed manual, bespoke exposed-carbon bodywork with 760-series aero.", "records": "Gained fame when it appeared in Top Gear (series 7, episode 4 of the rebooted show)."}, {"slug": "zonda-fantasma-evo", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda Fantasma Evo", "year": 2017, "price": "~$4,500,000 (estimated value)", "production": "1 (rebuilt)", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 760, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "'Fantasma' means ghost. Originally a Zonda F that was crashed, rebuilt as the 760 Fantasma, then returned to the factory again in 2017 for a second transformation — the Fantasma Evo. A car with more lives than most.", "engineering": "Second rebuild brought updated aero, a roof scoop, tricolore accents, and the full 760 hp manual drivetrain.", "records": "A symbol of the Zonda's strange immortality: some individual chassis have been rebuilt by the factory multiple times, each time emerging as a 'new' one-off."}, {"slug": "zonda-aether", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda Aether", "year": 2017, "price": "$6,812,000 (RM Sotheby's auction, 2019)", "production": "1", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 760, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "A 760-series one-off roadster built in 2017, notable for pairing the open top with a gated manual — the analog dream spec.", "engineering": "760 hp 7.3L V12, 6-speed manual, roadster body with exposed carbon.", "records": "One of very few one-off Zondas with a public price: it sold at RM Sotheby's Abu Dhabi in November 2019 for $6,812,500, at the time among the highest prices ever paid for a Zonda at auction."}, {"slug": "zonda-hp-barchetta", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda HP Barchetta", "year": 2017, "price": "~$15,000,000–17,500,000 (original commission price)", "production": "3 (1 kept by Horacio Pagani)", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed sequential", "hp": 789, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 221, "zeroSixty": 3.4, "torque": 575, "weight": 2756, "story": "Horacio Pagani's 60th birthday present to himself, unveiled at Pebble Beach 2017. 'HP' are his initials; 'barchetta' (little boat) references 1950s open racing cars. Just three built — one kept by Horacio, the design deliberately evoking a bygone romantic era of motoring.", "engineering": "The most extreme open Zonda: a dramatically chopped-down windscreen, partially enclosed rear wheels, 789 hp Revolución-spec engine, and unique bodywork shared with no other Zonda.", "records": "Reported at $15M+ when new, making it one of the most expensive new cars ever sold at the time. Horacio's personal example is arguably the crown jewel of the entire Zonda lineage."}, {"slug": "zonda-arrivederci", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda Arrivederci", "year": 2023, "price": "Undisclosed (one-off commission)", "production": "1 (billed as the final Zonda)", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 760, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "Billed as the final Zonda ever — 'Arrivederci' means 'goodbye.' Delivered more than two decades after the C12 debuted, closing the book on one of the longest-lived supercars in history (though Pagani has said 'the last Zonda' before...).", "engineering": "Full 760-series specification: 760 hp, manual gearbox, bespoke exposed carbon body.", "records": "If the name holds true, this is the last new Zonda — the end of a 24-year production run for a car originally planned to end in 2005."}, {"slug": "zonda-760-oliver-evolution", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda 760 Oliver Evolution", "year": 2016, "price": "Undisclosed (one-off commission)", "production": "1 (an Oliver Roadster followed in 2019 for the same owner)", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 760, "drivetrain": "RWD", "downforce": "Bespoke rear spoiler, LM-style front ducts, side winglets; figures not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "Commissioned by one of Pagani's biggest collectors, based in Tokyo, and famously named after his young son Oliver. Regarded as the last 'true' build of the 760 series, and the most track-focused road-going Zonda ever made. The same owner later commissioned a matching Oliver Roadster, unveiled in 2019.", "engineering": "Based on the 760RS with a uniquely designed rear spoiler developed for maximum downforce, front air ducts borrowed from the Zonda LM, and added side winglets. 760 hp 7.3L V12 with a 6-speed manual. Development input came from professional GT racing.", "records": "Tested at Fuji Speedway by Toyota factory driver and GT500 champion Akira Iida during the Pagani Raduno Japan, who called it the best-handling Zonda he had ever driven and the closest thing to a road-legal Zonda R. Displayed at Salon Privé for the Zonda's 20th anniversary."}, {"slug": "zonda-760-attack", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda 760 'Attack'", "year": 2023, "price": "Undisclosed (offered via DK Engineering, price on application)", "production": "1 (built on Zonda F prototype chassis PT2)", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 760, "drivetrain": "RWD", "downforce": "Cinque-spec splitter, sills, and diffuser; figures not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "One of the strangest origin stories in the Zonda catalog: the Attack is built on PT2, an original Zonda F prototype chassis completed in 2007 — believed to be the only F prototype chassis surviving undamaged. At the owner's request it was upgraded to full 760 specification over a multi-year program that concluded in 2023, deliberately blending elements from every preceding Zonda generation into one car.", "engineering": "Full 760-spec 7.3L V12 (engine returned to AMG for a complete rebuild) with a 6-speed manual, center-lock magnesium wheels, and carbon-ceramic brakes. Bodywork mixes 760-series clams, fin, and wing with Cinque-specification splitter, side sills, skirts, roof scoop, and diffuser, plus Zonda R-style taillights. Finished in bespoke Grigio Knockhill metallic over exposed carbon in a Cinque-style livery.", "records": "Effectively a 'greatest hits' Zonda assembled on a piece of factory history — the F prototype chassis. Surfaced publicly when offered for sale by DK Engineering in the UK, one of very few 760-series cars to appear on the open market."}, {"slug": "zonda-760-lm", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda 760 LM", "year": 2014, "price": "Undisclosed (one-off commission)", "production": "1 (coupé; a sister LM Roadster was commissioned alongside it)", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 760, "drivetrain": "RWD", "downforce": "Enlarged rear wing over 760RS spec; figures not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "A tribute to the Le Mans sport prototypes, and a milestone in how Pagani builds one-offs: per RM Sotheby's, it was the first time a client was directly involved in creating an entirely new Pagani model, under what is now called the Grandi Complicazioni series. Pagani has described the LM project as the most challenging Zonda-based build it ever faced. The commission produced a matched pair — this coupé and a roadster.", "engineering": "Required the development of 60 dedicated new components with their own aerodynamic study — Pagani stores all the molds in case future repairs are needed. The only Zonda ever fitted with different headlights: a Le Mans prototype-inspired cluster. Larger rear wing than the 760RS, exposed carbon body, Italian tricolore stripe on one side of the bonnet and a German flag on the other (honoring the AMG engine), full 760-spec 7.3L V12 with a 6-speed manual.", "records": "Its LM-style front air ducts were influential enough inside the factory to be borrowed for the later Zonda 760 Oliver Evolution. One half of arguably the most ambitious one-off program of the entire Zonda era."}, {"slug": "zonda-760-lm-roadster", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda 760 LM Roadster", "year": 2014, "price": "$11,086,250 (RM Sotheby's auction, Dubai, Dec 2024)", "production": "1 (rebuilt from a Zonda S 7.3 Roadster)", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 7-speed paddle-shift sequential", "hp": 760, "drivetrain": "RWD", "downforce": "Wing mounted at four points; figures not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "The open half of the LM pair, built alongside the coupé for the same Le Mans-prototype commission. Bare lacquered carbon with lime green accents, blending design elements from the Cinque, Tricolore, and Zonda R into one car.", "engineering": "Began as a Zonda S 7.3 Roadster before its factory transformation. Shares the LM programme's 60 bespoke components and unique Le Mans-style headlight clusters, and unusually for a 760-series car uses a 7-speed paddle-shift sequential gearbox rather than a manual. Fitted with 19-inch Zonda R-style wheels, Huayra mirrors, Tricolore rear-quarter intakes and exhaust outlet, Zonda R-style brake lights, and a towering Revolución-style rear wing mounted at four points. Competition-style interior with four-point harnesses and green stitching.", "records": "Sold at RM Sotheby's Dubai on 1 December 2024 for $11,086,250 — the second most expensive Pagani ever sold at auction, beating even Lewis Hamilton's 760LH. One of the very few 760-series cars with a public, verified market price."}, {"slug": "zonda-760x", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda 760X", "year": 2015, "price": "Undisclosed (one-off commission)", "production": "1", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 760, "drivetrain": "RWD", "downforce": "Oversized 760-series rear wing; figures not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "A 760-series one-off that broke the family's usual bare-carbon dress code: the 760X wears an eye-catching baby blue finish, with only select pieces — the enormous rear wing and the long roof air scoop — left in exposed carbon. It appeared just as the Zonda LM was assumed to be the final Zonda, becoming yet another 'last Zonda that wasn't.'", "engineering": "Standard 760-series mechanicals: the 760 hp 7.3L V12 with a 6-speed manual, wide-body 760RS elements, roof scoop, and oversized rear wing.", "records": "One of the more visually distinctive 760s thanks to the blue bodywork — most of its siblings are exposed carbon. A regular fixture in 'every Zonda one-off' roundups."}, {"slug": "zonda-760-oliver-roadster", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda 760 Oliver Roadster", "year": 2019, "price": "Undisclosed (one-off commission)", "production": "1", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 760, "drivetrain": "RWD", "downforce": "Aero matching the Oliver Evolution coupé; figures not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "The open-top companion to the Oliver Evolution, commissioned by the same Tokyo-based collector and unveiled in 2019 at the private Pagani dinner where the Zonda Venti was also revealed — proof that the Oliver commission was a family affair rather than a one-time build.", "engineering": "Carries aerodynamic specifications matching the Oliver Evolution coupé — the bespoke split rear wing concept, LM-style front ducts, and side winglets — in roadster form, with the 760 hp 7.3L V12 and 6-speed manual.", "records": "Together with the coupé, forms one of the few matched coupé/roadster one-off pairs in the Zonda catalog, alongside the LM pair."}, {"slug": "zonda-760vr-roadster", "family": "Zonda", "manufacturer": "Pagani", "model": "Zonda 760VR Roadster", "year": 2015, "price": "Undisclosed (one-off rebuild)", "production": "1 (rebuilt from Zonda F Roadster, chassis 76089)", "engine": "7.3L NA V12 — Mercedes-AMG M297", "powertrain": "ICE, 6-speed manual", "hp": 760, "drivetrain": "RWD", "downforce": "Cinque-derived aero package; figures not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 217, "zeroSixty": 3, "torque": 575, "weight": 2646, "story": "Named like Lewis Hamilton's 760LH — 'VR' are the owner's initials. It began life as a Zonda F Roadster, chassis 76089, one of only 25 F Roadsters ever built, before being sent back to the factory for a full transformation under Pagani's upgrade program for existing customers. It became internet-famous through 2015 sightings in London and Monaco's Casino Square.", "engineering": "Retains its original Zonda F chassis and interior; the exterior was rebuilt around Cinque components — rear spoiler, engine deck lid, roof scoop, front splitter, side skirts, and ram-air scoops on the rear fenders — with the 760 hp 7.3L V12. Finished in bare carbon with dark blue bodywork and light blue stripes.", "records": "Often cited among the best-looking open Zondas thanks to its carbon/blue color scheme. A textbook example of Pagani's rebuild program turning a 'standard' Zonda F into a one-off 760."}, {"slug": "huayra", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra", "year": 2011, "price": "~$1,300,000 (original retail)", "production": "100", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 730, "drivetrain": "RWD", "downforce": "Active aero (4 movable flaps); figures not published", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 238, "zeroSixty": 2.8, "torque": 738, "weight": 2976, "story": "The Zonda's successor, seven years in development, named after Wayra Tata — the god of wind in Quechua (Andean) mythology, a nod to Horacio's Argentine roots and the car's wind-sculpted design. Top Gear named it Hypercar of the Year 2012.", "engineering": "Introduced 'Carbotanium' (carbon-titanium composite) bodywork and one of the first active aerodynamic systems on a road car: four independently moving flaps at each corner that adjust in real time to braking, cornering, and speed — the car literally reshapes itself. The bespoke Mercedes-AMG M158 6.0L twin-turbo V12 (730 hp, 738 lb-ft) was built exclusively for Pagani, with turbo response tuned to feel naturally aspirated. Gearbox is a single-clutch AMT chosen over a dual-clutch to save ~70 kg.", "records": "Sold out by 2015; production capped at 100 units by agreement with Mercedes-AMG. Set a Top Gear test track record when launched. The active aero system was genuinely pioneering — a concept later adopted across the hypercar industry."}, {"slug": "huayra-bc", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra BC", "year": 2016, "price": "~$2,550,000 (original retail, €2.35M)", "production": "30 (Pagani originally claimed 20)", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 754, "drivetrain": "RWD", "downforce": "~1,100 lbs @ 155 mph (est.)", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 238, "zeroSixty": 2.8, "torque": 811, "weight": 2685, "story": "'BC' honors Benny Caiola, the Italian-American real estate magnate who was Pagani's very first customer and a close friend of Horacio. Built as the hardcore, track-leaning Huayra.", "engineering": "754 hp, 811 lb-ft, and nearly 300 lbs lighter than the standard car thanks to a new triple-layer carbon called 'Carbo-Triax.' New suspension in aeronautical-grade Avional alloy, active aero recalibrated for aggression, and a monstrous rear diffuser.", "records": "Officially limited to 20 units — Pagani quietly built 30, a famous piece of hypercar trivia. Each cost over €2.1M and all sold instantly."}, {"slug": "huayra-roadster", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra Roadster", "year": 2017, "price": "~$2,400,000 (original retail)", "production": "100", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 764, "drivetrain": "RWD", "downforce": "Active aero; figures not published", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 238, "zeroSixty": 2.8, "torque": 738, "weight": 2822, "story": "The open Huayra, and a rare case where the roadster is lighter than the coupe — an obsession of Horacio's after the weight compromises of typical convertibles.", "engineering": "At 2,822 lbs dry it undercut the coupe by roughly 150 lbs via a redesigned Carbotanium/Carbo-Triax monocoque. Power rose to 764 hp. Uses conventional doors instead of gullwings (impossible on an open car).", "records": "Believed to be the first modern supercar where the open version out-lightened the closed one. All 100 sold before the public unveiling."}, {"slug": "huayra-roadster-bc", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra Roadster BC", "year": 2019, "price": "~$3,500,000 (original retail)", "production": "40", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 791, "drivetrain": "RWD", "downforce": "~1,100 lbs @ 155 mph (est.)", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 238, "zeroSixty": 2.7, "torque": 774, "weight": 2755, "story": "The BC treatment applied to the roadster — the most extreme open road-going Pagani of its era.", "engineering": "791 hp and 774 lb-ft with a titanium-rich exhaust, extensive aero rework generating around 1,100 lbs of downforce at speed, and six-way adjustable dampers. Dry weight held to 2,755 lbs despite the added performance hardware.", "records": "At ~$3.5M and 40 units, it was the fastest and most powerful road Pagani when launched."}, {"slug": "huayra-imola", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra Imola", "year": 2020, "price": "~$5,400,000 (original retail)", "production": "5", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 827, "drivetrain": "RWD", "downforce": "Significant fixed + active aero; figures not published", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 238, "zeroSixty": 2.7, "torque": 811, "weight": 2747, "story": "Named after the Imola circuit where it was developed — the first Pagani named for a racetrack. A road-legal car built with track-day obsession.", "engineering": "827 hp with a fixed 'brutalist' aero package. Debuted Pagani's 'Acquarello Light' paint system, which saves 5 kg versus conventional paint — a perfect example of Pagani-level obsession. Extensive testing accumulated the equivalent of 16,000+ km at race pace.", "records": "At $5.4M and 5 units, it was among the most expensive new Paganis ever at launch. The lessons from its development fed directly into the Huayra R program."}, {"slug": "huayra-imola-roadster", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra Imola Roadster", "year": 2023, "price": "~$6,500,000 (estimated retail)", "production": "8", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 838, "drivetrain": "RWD", "downforce": "Fixed + active aero; figures not published", "roadLegal": "Yes", "status": "Limited run (sold out)", "topSpeed": "Not published", "zeroSixty": 2.7, "torque": 811, "weight": 2822, "story": "The open-top counterpart to the Imola, revealed in late 2023 and drawing inspiration from the track-only Huayra R.", "engineering": "838 hp and 811 lb-ft from the M158 twin-turbo V12, with a comprehensive fixed-plus-active aero package adapted from the Imola coupe.", "records": "Just 8 units, all pre-sold. Effectively the swan song of the extreme road-going Huayra derivatives."}, {"slug": "huayra-r", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra R", "year": 2021, "price": "~$3,100,000 (original retail, €2.6M)", "production": "30 (estimated)", "engine": "6.0L NA V12 — Mercedes-AMG V12-R", "powertrain": "ICE, 6-speed sequential dog-ring", "hp": 850, "drivetrain": "RWD", "downforce": "~2,200 lbs @ 199 mph", "roadLegal": "No", "status": "Limited run (track only)", "topSpeed": 238, "zeroSixty": 2.5, "torque": 553, "weight": 2315, "story": "Horacio Pagani built the Huayra R as the ultimate, unconstrained expression of performance — free from road homologation and motorsport rulebooks, and serving as a rolling laboratory for future models. It is the spiritual successor to the Zonda R, commissioned to recapture that car's raw, F1-style analog magic by abandoning turbocharging entirely.", "engineering": "Pagani commissioned HWA AG (Mercedes' legendary racing subsidiary) to develop a bespoke, ground-up 6.0L naturally aspirated V12 revving to 9,000 rpm and weighing just 436 lbs while acting as a structural chassis element. Monocoque woven from Carbo-Titanium HP62 G2 and Carbo-Triax HP62; dry weight 2,315 lbs. The Inconel 625 exhaust is hydroformed, ceramic-coated, and features twelve identical-length pipes tuned to mimic 1980s Formula 1 acoustics.", "records": "Generates roughly 2,200 lbs of downforce at 199 mph — about its own weight, meaning it could theoretically drive upside down. Customer testing in the Arte in Pista program shows lap pace comparable to modern LMP2 endurance racers."}, {"slug": "huayra-r-evo", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra R Evo", "year": 2024, "price": "~$6,000,000+ (estimated)", "production": "Limited run (count not published)", "engine": "6.0L NA V12 — Mercedes-AMG V12 R-Evo", "powertrain": "ICE, 6-speed sequential dog-ring", "hp": 888, "drivetrain": "RWD", "downforce": ">2,200 lbs @ 199 mph (increased over Huayra R)", "roadLegal": "No", "status": "In production (track only)", "topSpeed": "Not published", "zeroSixty": 2.4, "torque": 568, "weight": 2337, "story": "The evolution of the Huayra R, revealed in 2024 as the most powerful Pagani ever built.", "engineering": "The V12 R-Evo engine produces roughly 888-900 hp, still naturally aspirated, still screaming past 9,000 rpm. Longtail-influenced bodywork with a central stabilizing fin increases downforce beyond the standard R.", "records": "Officially the most powerful Pagani in history at launch. Runs exclusively in the factory's Arte in Pista track program at FIA circuits worldwide."}, {"slug": "huayra-r-evo-roadster", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra R Evo Roadster", "year": 2025, "price": "~$7,000,000+ (estimated)", "production": "Limited run (count not published)", "engine": "6.0L NA V12 — Mercedes-AMG V12 R-Evo", "powertrain": "ICE, 6-speed sequential dog-ring", "hp": 888, "drivetrain": "RWD", "downforce": "Longtail aero, central fin; figures not published", "roadLegal": "No", "status": "In production (track only)", "topSpeed": "Not published", "zeroSixty": 2.4, "torque": 568, "weight": 2337, "story": "An open-top, long-tail track weapon revealed in 2025 — simultaneously a 'codalunga' longtail and a roadster, inspired by the elegant Le Mans prototypes of the '60s and '70s.", "engineering": "Same ~888 hp V12 R-Evo as the coupe with a removable canopy, an extended ~19 cm rear deck, central fin, and enlarged aerodynamic underbody. Class A carbon fiber bodywork originally developed for the Utopia.", "records": "The current pinnacle of Pagani's track-only lineage — beauty and violence in equal measure, per the factory's own two-year development brief."}, {"slug": "huayra-codalunga", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra Codalunga", "year": 2022, "price": "~$7,400,000 (original retail, €7M)", "production": "5", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 829, "drivetrain": "RWD", "downforce": "Low-drag longtail design; figures not published", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": "Not published", "zeroSixty": 2.8, "torque": 811, "weight": 2822, "story": "'Codalunga' means 'long tail.' A love letter to the streamlined longtail Le Mans racers of the 1960s — especially the Porsche 917, Horacio's favorite car. Born when two collectors approached Pagani's Grandi Complicazioni (grand complications) coachbuilding division, borrowing its name from haute horlogerie.", "engineering": "Completely new bodywork from the A-pillar back, 360mm longer than a standard Huayra, with no rear grille — just an unobstructed view of the titanium exhaust. Designed for elegance and low drag rather than maximum downforce; 829 hp twin-turbo V12.", "records": "Won the Design Award at the 2023 Concorso d'Eleganza Villa d'Este. At €7M and 5 units, all sold before unveiling — one of the purest 'rolling sculpture' Paganis."}, {"slug": "huayra-codalunga-speedster", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra Codalunga Speedster", "year": 2025, "price": "~$8,000,000+ (estimated, above coupe's €7M)", "production": "10 (deliveries begin 2026)", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed AMT or 7-speed manual (Xtrac)", "hp": 864, "drivetrain": "RWD", "downforce": "Low-drag design, hidden NACA ducts; figures not published", "roadLegal": "Yes", "status": "In production", "topSpeed": "Not published", "zeroSixty": 2.8, "torque": 811, "weight": 2800, "story": "The open-air interpretation of the Codalunga, sketched personally by Horacio Pagani as a tribute to 1950s-60s racing elegance. Revealed July 2025.", "engineering": "864 hp / 811 lb-ft Utopia-spec V12 with a choice of 7-speed AMT or — remarkably — a true manual, making it only the second manual Huayra ever. Dramatically lowered windshield, hidden NACA ducts, and a removable hardtop that integrates seamlessly into the silhouette. Features an haute-couture embroidery fabric never before used in a car, inspired by Pagani's four-exhaust motif.", "records": "Ten units, fully road-homologated worldwide, deliveries from 2026. Expected to exceed the coupe's €7M price."}, {"slug": "huayra-epitome", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra Epitome", "year": 2024, "price": "Undisclosed (one-off commission)", "production": "1 (only manual Huayra coupe)", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed manual (Xtrac)", "hp": 864, "drivetrain": "RWD", "downforce": "Not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": "Not published", "zeroSixty": 2.8, "torque": 811, "weight": 2800, "story": "A one-off unveiled in July 2024 with a single headline: the first and only manual-transmission Huayra coupe, built for a collector who wanted the analog experience the Huayra never offered.", "engineering": "864 hp Utopia-spec twin-turbo V12 paired with a 7-speed Xtrac manual gearbox, plus bespoke bodywork blending Huayra and Utopia design cues.", "records": "Made headlines worldwide as 'the Huayra finally gets a manual' — 13 years after the model debuted."}, {"slug": "huayra-tricolore", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra Tricolore", "year": 2020, "price": "~$6,000,000 (original retail, €5.5M)", "production": "3", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 840, "drivetrain": "RWD", "downforce": "Fixed rear wing + active flaps; figures not published", "roadLegal": "Yes", "status": "Discontinued", "topSpeed": 238, "zeroSixty": 2.7, "torque": 811, "weight": 2799, "story": "Like the Zonda Tricolore before it, a tribute to the Frecce Tricolori — this time marking the Italian aerobatic squadron's 60th anniversary in 2020.", "engineering": "840 hp version of the twin-turbo V12, an external roll hoop inspired by aircraft canopies, a pitot tube on the nose (a real aviation airspeed sensor), and Italian flag livery over blue carbon.", "records": "Three units at ~€5.5M each. The pitot tube is functional — pure Pagani theater backed by real engineering."}, {"slug": "huayra-dinastia-baxia-yazi-chiwen", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra Dinastia (Baxia / Yazi / Chiwen)", "year": 2015, "price": "Undisclosed (bespoke commissions)", "production": "3 (one of each dragon)", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 730, "drivetrain": "RWD", "downforce": "Active aero; figures not published", "roadLegal": "Yes", "status": "Limited one-offs", "topSpeed": 238, "zeroSixty": 2.8, "torque": 738, "weight": 2976, "story": "Three bespoke cars built for the Chinese market in 2015 to mark Pagani's Shanghai showroom opening, each named for a dragon of Chinese mythology: Baxia (water dragon, blue), Yazi (warrior dragon, purple), and Chiwen (gold).", "engineering": "Standard 730 hp Huayra mechanicals under unique exposed-carbon liveries with dragon motifs on the rear fin and gold-finished wheels on some examples.", "records": "A rare case of Pagani building a themed set of one-offs — collectors regard the trio as a single divided artwork."}, {"slug": "huayra-lampo", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra Lampo", "year": 2017, "price": "Undisclosed (one-off commission)", "production": "1", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 730, "drivetrain": "RWD", "downforce": "Tempesta aero package; figures not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 238, "zeroSixty": 2.8, "torque": 738, "weight": 2910, "story": "'Lampo' means lightning. A 2017 one-off created with Lapo Elkann's Garage Italia Customs, inspired by the 1954 Fiat Turbina concept car.", "engineering": "Standard Huayra drivetrain wearing the Tempesta aero package (larger front openings, new splitter and sill aero) with a livery echoing the Turbina's experimental-aircraft aesthetic.", "records": "One of the few Paganis designed in collaboration with an outside styling house."}, {"slug": "huayra-herm-s-edition", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra Hermès Edition", "year": 2016, "price": "Undisclosed (one-off commission)", "production": "1", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 730, "drivetrain": "RWD", "downforce": "Active aero; figures not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 238, "zeroSixty": 2.8, "torque": 738, "weight": 2976, "story": "A one-of-one coach-built Huayra with interior and exterior detailing by Hermès, the French luxury house — commissioned and partly designed by collector Manny Khoshbin.", "engineering": "Standard Huayra mechanicals; the story is the craftsmanship — Hermès leather throughout, bespoke luggage, and unique trim details co-developed between the two ateliers.", "records": "One of the most famous Paganis on the internet thanks to Khoshbin's massive following, and a rare official collaboration between a hypercar maker and a fashion house."}, {"slug": "huayra-pearl", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra Pearl", "year": 2016, "price": "Undisclosed (one-off commission)", "production": "1", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 730, "drivetrain": "RWD", "downforce": "Tempesta package; figures not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 238, "zeroSixty": 2.8, "torque": 738, "weight": 2910, "story": "A one-off commissioned by Ahmed El Bakry, founder of Refined Marques, delivered in 2016 with a white-and-blue scheme referencing the Zonda Uno.", "engineering": "Huayra with the Tempesta package and bespoke aero details.", "records": "Infamous for its bad luck: crashed in Paris shortly after delivery, then crashed again in Saudi Arabia in 2021 (rear-ending a Porsche Cayman GT4 on video). Rebuilt both times."}, {"slug": "huayra-la-monza-lisa", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra La Monza Lisa", "year": 2014, "price": "Undisclosed (one-off commission)", "production": "1", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 730, "drivetrain": "RWD", "downforce": "Active aero; figures not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 238, "zeroSixty": 2.8, "torque": 738, "weight": 2976, "story": "Commissioned by Miami collector Kris Singh, delivered in 2014 — the name is a pun on the Mona Lisa and the Monza circuit.", "engineering": "Exposed carbon body with an Italian-flag racing stripe over the hood and flanks, tributing the Zonda Revolución's livery; red leather interior.", "records": "One of the earliest and most famous bespoke Huayras; survived a mostly-cosmetic crash near Miami in 2016."}, {"slug": "huayra-l-ultimo", "family": "Huayra", "manufacturer": "Pagani", "model": "Huayra L'Ultimo", "year": 2018, "price": "Undisclosed (one-off commission)", "production": "1 (final 'standard' Huayra coupe)", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed automated manual (Xtrac)", "hp": 754, "drivetrain": "RWD", "downforce": "Tempesta package; figures not published", "roadLegal": "Yes", "status": "One-off", "topSpeed": 238, "zeroSixty": 2.8, "torque": 811, "weight": 2910, "story": "'The Last' — the final standard Huayra coupe built, delivered in 2018 with a specification chosen to send the model off in style.", "engineering": "BC-influenced 754 hp spec with the Tempesta aero package and bespoke detailing.", "records": "Marks the end of the 100-unit Huayra coupe run; a bookend car for collectors."}, {"slug": "utopia", "family": "Utopia", "manufacturer": "Pagani", "model": "Utopia", "year": 2022, "price": "~$2,500,000 (original retail)", "production": "99", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed AMT or 7-speed manual (Xtrac)", "hp": 852, "drivetrain": "RWD", "downforce": "No active aero by design; figures not published", "roadLegal": "Yes", "status": "In production", "topSpeed": 230, "zeroSixty": 2.8, "torque": 811, "weight": 2822, "story": "Pagani's third act, revealed September 2022 after six years of development under the codename C10. The name states the philosophy: while rivals chased hybrid systems and touchscreens, Horacio built his 'utopia' — an analog hypercar with no hybrid assistance, no giant wing, and an available gated manual. Customers reportedly begged for exactly this.", "engineering": "864 hp / 811 lb-ft from an evolved M158 twin-turbo V12 — one of the last bespoke pure-combustion V12s in production. Offered with a 7-speed pure manual or AMT (no dual-clutch, no paddles-only). Aero is achieved through body shaping rather than appendages; the design brief was 'elegance without active flaps.' New Carbo-Titanium monocoque; dry weight 2,822 lbs.", "records": "99 coupes, all allocated before launch. Widely celebrated as a defiant last stand for the analog hypercar in the electrification era."}, {"slug": "utopia-roadster", "family": "Utopia", "manufacturer": "Pagani", "model": "Utopia Roadster", "year": 2024, "price": "~$3,400,000 (original retail)", "production": "130", "engine": "6.0L twin-turbo V12 — Mercedes-AMG M158", "powertrain": "ICE, 7-speed AMT or 7-speed manual (Xtrac)", "hp": 852, "drivetrain": "RWD", "downforce": "No active aero by design; figures not published", "roadLegal": "Yes", "status": "In production", "topSpeed": 230, "zeroSixty": 2.8, "torque": 811, "weight": 2822, "story": "The open Utopia, launched 2024 — continuing Pagani's tradition (started with the Huayra Roadster) of open cars that give up nothing to their coupe siblings.", "engineering": "Same 864 hp V12 and manual/AMT choice as the coupe, with a carbon hardtop and no weight penalty worth mentioning thanks to the monocoque's inherent rigidity.", "records": "130 units — Pagani's largest single production allocation ever, and still sold out. Reportedly offered first to existing Pagani clients, with one penthouse development even bundling purchase rights."}];
+
+/* ---------- storage (works in Claude and in a normal browser) ---------- */
+const hasCloud = typeof window.storage !== 'undefined';
+
+/* IndexedDB backend — used when the app runs outside Claude (e.g. the downloaded
+   file opened in Chrome). Far larger capacity, so photos keep higher quality. */
+let idb = null;
+function openIDB(){
+  return new Promise((res)=>{
+    try{
+      const rq = indexedDB.open('pagani-collection', 1);
+      rq.onupgradeneeded = ()=> rq.result.createObjectStore('kv');
+      rq.onsuccess = ()=> res(rq.result);
+      rq.onerror = ()=> res(null);
+      rq.onblocked = ()=> res(null);
+    }catch(e){ res(null); }
+  });
+}
+function idbOp(mode, fn){
+  return new Promise((res)=>{
+    if(!idb) return res(undefined);
+    try{
+      const tx = idb.transaction('kv', mode);
+      const rq = fn(tx.objectStore('kv'));
+      rq.onsuccess = ()=> res(rq.result);
+      rq.onerror = ()=> res(undefined);
+    }catch(e){ res(undefined); }
+  });
+}
+
+const store = {
+  async get(k){
+    if(hasCloud){ try{ const r = await window.storage.get(k); return r ? r.value : null; }catch(e){ return null; } }
+    if(idb){ const v = await idbOp('readonly', s=>s.get(k)); return v === undefined ? null : v; }
+    try{ return localStorage.getItem(k); }catch(e){ return null; }
+  },
+  async set(k,v){
+    if(hasCloud){ try{ const r = await window.storage.set(k,v); return !!r; }catch(e){ return false; } }
+    if(idb){ let ok = true; await new Promise((res)=>{ try{
+        const tx = idb.transaction('kv','readwrite');
+        tx.objectStore('kv').put(v,k);
+        tx.oncomplete = ()=> res(); tx.onerror = ()=>{ ok=false; res(); }; tx.onabort = ()=>{ ok=false; res(); };
+      }catch(e){ ok=false; res(); } });
+      return ok;
+    }
+    try{ localStorage.setItem(k,v); return true; }catch(e){ return false; }
+  },
+  async del(k){
+    if(hasCloud){ try{ await window.storage.delete(k); }catch(e){} return; }
+    if(idb){ await idbOp('readwrite', s=>s.delete(k)); return; }
+    try{ localStorage.removeItem(k); }catch(e){}
+  }
+};
+
+/* Higher quality when we have room (outside Claude / IndexedDB mode) */
+const bigStorage = ()=> !hasCloud;
+const MAXDIM = ()=> bigStorage() ? 1800 : 1280;
+const QUAL   = ()=> bigStorage() ? 0.88 : 0.82;
+const CAR_BUDGET = ()=> bigStorage() ? 60*1024*1024 : 4.6*1024*1024;
+
+const COVERS_KEY = 'pagani-covers-v2';
+const carKey = slug => 'pagani-photos-v2:' + slug;
+let covers = {};            // slug -> small thumbnail dataURL (for cards)
+let currentPhotos = [];     // photos of the currently open car
+
+async function loadCovers(){
+  const v = await store.get(COVERS_KEY);
+  if(v){ try{ covers = JSON.parse(v); }catch(e){ covers = {}; } }
+  if(SEED && SEED.covers) covers = Object.assign({}, SEED.covers, covers);
+  render();
+}
+async function saveCovers(){
+  const ok = await store.set(COVERS_KEY, JSON.stringify(covers));
+  if(!ok) toast('Could not save the cover thumbnail — the shared cover index may be full.');
+  return ok;
+}
+
+/* ---------- image compression ---------- */
+function fileToImage(file){
+  // Read via FileReader -> data URL. blob: object URLs can be blocked by the
+  // sandbox this app runs in, so we avoid them entirely.
+  return new Promise((res, rej)=>{
+    const reader = new FileReader();
+    reader.onerror = ()=> rej(new Error('read failed'));
+    reader.onload = ()=>{
+      const img = new Image();
+      img.onload = ()=> res(img);
+      img.onerror = ()=> rej(new Error('not a decodable image'));
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function shrink(img, maxDim, quality){
+  const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+  const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+  const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+  cv.getContext('2d').drawImage(img, 0, 0, w, h);
+  return cv.toDataURL('image/jpeg', quality);
+}
+function shrinkFromDataURL(dataUrl, maxDim, quality){
+  return new Promise((res)=>{
+    const img = new Image();
+    img.onload = ()=> res(shrink(img, maxDim, quality));
+    img.onerror = ()=> res(null);
+    img.src = dataUrl;
+  });
+}
+
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block';
+  clearTimeout(t._h); t._h=setTimeout(()=>t.style.display='none', 3200); }
+
+
+let fFam='all', fLegal=null, q='', sort='year';
+
+function visible(){
+  let list = CARS.filter(c=>{
+    if(fFam!=='all' && c.family!==fFam) return false;
+    if(fLegal==='road' && c.roadLegal!=='Yes') return false;
+    if(fLegal==='track' && c.roadLegal!=='No') return false;
+    if(q && !c.model.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  list.sort((a,b)=> sort==='hp' ? b.hp-a.hp : sort==='name' ? a.model.localeCompare(b.model) : a.year-b.year);
+  return list;
+}
+
+function isOneOff(c){ return /one-off/i.test(c.status) || /^1\b/.test(String(c.production)); }
+
+function cardHTML(c){
+  const ph = covers[c.slug];
+  const cover = ph ? `<img src="${esc(ph)}" alt="${esc(c.model)}" loading="lazy" onerror="this.remove()">`
+                   : `<div class="mono-mark">${esc(initials(c))}</div>`;
+  return `<button class="card" data-fam="${c.family}" onclick="openCar('${c.slug}')">
+    <div class="cover"><span class="fam-spine"></span>${cover}</div>
+    <div class="cbody">
+      <div class="crow"><span class="cname">${esc(c.model)}</span><span class="cyear">${c.year}</span></div>
+      <div class="tags">
+        ${c.roadLegal==='No' ? '<span class="tag track">Track only</span>' : ''}
+        ${isOneOff(c) ? '<span class="tag oneoff">One-off</span>' : ''}
+      </div>
+      <div class="cstats"><span><b>${c.hp}</b> hp</span><span><b>${c.weight.toLocaleString()}</b> lbs</span><span><b>${c.zeroSixty}</b>s 0-60</span></div>
+    </div>
+  </button>`;
+}
+
+function initials(c){
+  const m = c.model.replace(/^Zonda |^Huayra |^Utopia ?/,'');
+  return m ? m.split(' ')[0].slice(0,6) : c.family;
+}
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+function render(){
+  const list = visible();
+  document.getElementById('grid').innerHTML = list.map(cardHTML).join('');
+  document.getElementById('count').textContent = list.length + ' / ' + CARS.length + ' cars';
+}
+
+function plaqueItem(lab,val,cls=''){ return `<div class="pitem ${cls}"><div class="plab">${lab}</div><div class="pval ${cls?'':''}">${esc(val)}</div></div>`; }
+
+let currentSlug=null;
+async function openCar(slug){
+  currentSlug = slug;
+  const c = CARS.find(x=>x.slug===slug);
+  let ph = [];
+  const raw = await store.get(carKey(slug));
+  if(raw){ try{ ph = JSON.parse(raw); }catch(e){ ph = []; } }
+  else if(SEED && SEED.photos && SEED.photos[slug]) ph = SEED.photos[slug].slice();
+  ph = ph.map(p => typeof p === 'string' ? {src:p, credit:''} : p);   // migrate old format
+  if(currentSlug !== slug) return;   // user closed/switched while loading
+  currentPhotos = ph;
+  const hero = ph[0] ? `<img src="${esc(ph[0].src)}" alt="${esc(c.model)}" onerror="this.remove()">`
+                       + (ph[0].credit ? `<div class="hero-credit">${esc(ph[0].credit)}</div>` : '')
+                     : `<div class="mono-mark">${esc(initials(c))}</div>`;
+  const gal = ph.length ? `<div class="gal">`+ph.map((p,i)=>
+      `<div class="gfig">
+        <div class="gitem"><img src="${esc(p.src)}" onerror="this.parentElement.style.opacity=.35" alt="photo ${i+1}">
+          <button class="gdel" title="Remove photo" onclick="delPhoto(${i})">✕</button></div>
+        <div class="gcredit ${p.credit?'':'empty'}" id="credit-${i}" onclick="editCredit(${i})">${p.credit ? esc(p.credit) : 'Add credit / license…'}</div>
+      </div>`).join('')+`</div>`
+    : `<div class="gempty">No photos yet — add some from your device below.</div>`;
+
+  document.getElementById('sheet').dataset.fam = c.family;
+  document.getElementById('sheet').innerHTML = `
+    <button class="close" onclick="closeCar()" aria-label="Close">✕</button>
+    <div class="hero">${hero}<span class="fam-band"></span></div>
+    <div class="inner">
+      <div class="dhead">
+        <span class="dname">${esc(c.model)}</span>
+        <span class="dmeta">${c.year} · ${esc(c.manufacturer).toUpperCase()}</span>
+      </div>
+      <div class="tags dtags">
+        ${c.roadLegal==='No' ? '<span class="tag track">Track only</span>' : '<span class="tag">Road legal</span>'}
+        ${isOneOff(c) ? '<span class="tag oneoff">One-off</span>' : ''}
+        <span class="tag">${esc(c.status)}</span>
+      </div>
+
+      <div class="plaque">
+        <div class="plaque-title">Build Plaque · Specifications</div>
+        <div class="pgrid">
+          ${plaqueItem('Horsepower', c.hp + ' hp','big')}
+          ${plaqueItem('Torque', c.torque + ' lb-ft','big')}
+          ${plaqueItem('Weight (dry)', c.weight.toLocaleString() + ' lbs','big')}
+          ${plaqueItem('0–60 mph', c.zeroSixty + ' s','big')}
+          ${plaqueItem('Top speed', typeof c.topSpeed==='number' ? c.topSpeed+' mph' : c.topSpeed,'big')}
+          ${plaqueItem('Drivetrain', c.drivetrain)}
+          ${plaqueItem('Engine', c.engine,'pwide')}
+          ${plaqueItem('Powertrain', c.powertrain,'pwide')}
+          ${plaqueItem('Downforce', c.downforce,'pwide')}
+          ${plaqueItem('Price', c.price,'pwide')}
+          ${plaqueItem('Production', c.production,'pwide')}
+        </div>
+      </div>
+
+      <div class="sect"><h3>The Story</h3><p>${esc(c.story)}</p></div>
+      <div class="sect"><h3>Engineering</h3><p>${esc(c.engineering)}</p></div>
+      <div class="sect"><h3>Records &amp; Claims to Fame</h3><p>${esc(c.records)}</p></div>
+
+      <div class="sect"><h3>Photos</h3>
+        ${gal}
+        <div class="addrow">
+          <input id="pfile" type="file" accept="image/*" multiple hidden onchange="addPhotos(this.files)">
+          <button class="btn" onclick="document.getElementById('pfile').click()">Add photos from device</button>
+          <span id="pbusy" class="hint" style="display:none;align-self:center">Compressing…</span>
+        </div>
+        <div class="hint">Save any photo to your device first, then add it here — photos are compressed and stored inside the app. Click the line under a photo to add its credit (photographer, license, source); the first photo's credit also shows on the hero image.</div>
+      </div>
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeCar(){ document.getElementById('overlay').classList.remove('open'); document.body.style.overflow=''; currentSlug=null; render(); }
+
+async function addPhotos(files){
+  if(!files || !files.length) return;
+  const busy = document.getElementById('pbusy');
+  if(busy) busy.style.display = 'inline';
+  const slug = currentSlug;
+  let added = 0;
+  for(const f of files){
+    try{
+      const img = await fileToImage(f);
+      currentPhotos.push({src: shrink(img, MAXDIM(), QUAL()), credit: ''});
+      added++;
+    }catch(e){ toast('Skipped \u201c' + f.name + '\u201d — couldn\u2019t decode it. JPG, PNG, and WebP work best; HEIC (iPhone default) may need converting.'); }
+  }
+  if(added){
+    const json = JSON.stringify(currentPhotos);
+    if(json.length > CAR_BUDGET()){
+      currentPhotos.splice(currentPhotos.length - added, added);
+      toast('This car\u2019s gallery is full — remove a photo before adding more.');
+    } else {
+      const ok = await store.set(carKey(slug), json);
+      if(!ok){ currentPhotos.splice(currentPhotos.length - added, added); toast('Could not save photos — storage may be full.'); }
+      else {
+        covers[slug] = await shrinkFromDataURL(currentPhotos[0].src, 220, 0.55);
+        await saveCovers();
+      }
+    }
+  }
+  if(busy) busy.style.display = 'none';
+  if(currentSlug === slug) redrawOpenCar();
+}
+async function delPhoto(i){
+  const slug = currentSlug;
+  currentPhotos.splice(i,1);
+  if(currentPhotos.length){
+    await store.set(carKey(slug), JSON.stringify(currentPhotos));
+    covers[slug] = await shrinkFromDataURL(currentPhotos[0].src, 220, 0.55);
+  } else {
+    if(SEED && SEED.photos && SEED.photos[slug]) await store.set(carKey(slug), '[]');
+    else await store.del(carKey(slug));
+    delete covers[slug];
+  }
+  await saveCovers();
+  if(currentSlug === slug) redrawOpenCar();
+}
+function editCredit(i){
+  const el = document.getElementById('credit-' + i);
+  if(!el || el.querySelector('input')) return;
+  const cur = currentPhotos[i].credit || '';
+  el.classList.remove('empty');
+  el.innerHTML = `<input type="text" value="${esc(cur)}" placeholder="e.g. Photo: Alex Penfold, CC BY 2.0, Wikimedia Commons" maxlength="300">`;
+  const inp = el.querySelector('input');
+  inp.focus(); inp.select();
+  let done = false;
+  const commit = async ()=>{
+    if(done) return; done = true;
+    const v = inp.value.trim();
+    currentPhotos[i].credit = v;
+    const ok = await store.set(carKey(currentSlug), JSON.stringify(currentPhotos));
+    if(!ok) toast('Could not save credit — storage may be full.');
+    redrawOpenCar();
+  };
+  inp.addEventListener('keydown', e=>{
+    if(e.key === 'Enter') commit();
+    if(e.key === 'Escape'){ done = true; redrawOpenCar(); }
+    e.stopPropagation();   // don't let Escape close the sheet while editing
+  });
+  inp.addEventListener('blur', commit);
+}
+
+function redrawOpenCar(){
+  // re-render the open sheet from currentPhotos without re-fetching
+  const slug = currentSlug;
+  const saved = currentPhotos;
+  const origGet = store.get;
+  store.get = async(k)=> k===carKey(slug) ? JSON.stringify(saved) : origGet.call(store,k);
+  openCar(slug).finally(()=>{ store.get = origGet; });
+}
+
+async function gatherAll(){
+  const out = { covers: covers, photos: {} };
+  for(const c of CARS){
+    const raw = await store.get(carKey(c.slug));
+    if(raw){
+      try{ const arr = JSON.parse(raw); if(arr.length) out.photos[c.slug] = arr; }catch(e){}
+    } else if(SEED && SEED.photos && SEED.photos[c.slug]){
+      out.photos[c.slug] = SEED.photos[c.slug];
+    }
+  }
+  return out;
+}
+
+async function exportShareable(){
+  if(!PAGE_SRC){ toast('Couldn\u2019t read the app\u2019s own source in this environment.'); return; }
+  toast('Building shareable copy\u2026');
+  const data = await gatherAll();
+  const n = Object.keys(data.photos).length;
+  let src = PAGE_SRC;
+  // strip any previous seed
+  const s = src.indexOf('/*SEED_START*/'), e = src.indexOf('/*SEED_END*/');
+  if(s !== -1 && e !== -1) src = src.slice(0, s) + src.slice(e + '/*SEED_END*/'.length);
+  // inject fresh seed at the slot
+  const seedJS = '/*SEED_START*/window.__SEED__=' + JSON.stringify(data).replace(/<\//g,'<\\/') + ';/*SEED_END*/';
+  src = src.replace('/*SEED_SLOT*/', '/*SEED_SLOT*/' + seedJS);
+  try{
+    const blob = new Blob([src], {type:'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'Pagani Collection (shared).html';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+    const mb = (blob.size/1048576).toFixed(1);
+    toast('Shareable copy ready — ' + n + ' galleries baked in, ' + mb + ' MB.');
+  }catch(e){ toast('Could not create the file in this environment.'); }
+}
+
+async function exportPhotos(){
+  toast('Gathering photos\u2026');
+  const out = { app:'pagani-collection', version:1, exported:new Date().toISOString(), covers:{}, photos:{} };
+  out.covers = covers;
+  for(const c of CARS){
+    const raw = await store.get(carKey(c.slug));
+    if(raw){ try{ const arr = JSON.parse(raw); if(arr.length) out.photos[c.slug] = arr; }catch(e){} }
+  }
+  const n = Object.keys(out.photos).length;
+  if(!n){ toast('No photos to back up yet.'); return; }
+  try{
+    const blob = new Blob([JSON.stringify(out)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'pagani-photos-backup.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+    toast('Backup ready — ' + n + ' car galleries exported.');
+  }catch(e){ toast('Could not create the backup file in this environment.'); }
+}
+
+async function importPhotos(file){
+  if(!file) return;
+  let data;
+  try{ data = JSON.parse(await file.text()); }
+  catch(e){ toast('That file isn\u2019t a valid backup.'); return; }
+  if(!data || data.app !== 'pagani-collection' || !data.photos){ toast('That file isn\u2019t a Pagani Collection backup.'); return; }
+  let ok = 0, failed = 0;
+  for(const [slug, arr] of Object.entries(data.photos)){
+    if(!CARS.some(c=>c.slug===slug)) continue;
+    const saved = await store.set(carKey(slug), JSON.stringify(arr));
+    if(saved){
+      ok++;
+      if(arr[0] && arr[0].src) covers[slug] = await shrinkFromDataURL(arr[0].src, 220, 0.55);
+    } else failed++;
+  }
+  await saveCovers();
+  render();
+  toast(failed ? ('Restored ' + ok + ' galleries; ' + failed + ' didn\u2019t fit in storage.')
+               : ('Restored ' + ok + ' car galleries.'));
+  document.getElementById('restorefile').value = '';
+}
+
+document.querySelectorAll('.chip').forEach(ch=>{
+  if(!ch.dataset.f) return;   // Backup/Restore buttons are not filters
+  ch.addEventListener('click',()=>{
+    const f = ch.dataset.f;
+    if(f==='road'||f==='track'){
+      if(fLegal===f){fLegal=null;ch.classList.remove('on');}
+      else{fLegal=f;document.querySelectorAll('.chip[data-f=road],.chip[data-f=track]').forEach(x=>x.classList.remove('on'));ch.classList.add('on');}
+    } else {
+      fFam=f;
+      document.querySelectorAll('.chip[data-f=all],.chip[data-f=Zonda],.chip[data-f=Huayra],.chip[data-f=Utopia]').forEach(x=>x.classList.remove('on'));
+      ch.classList.add('on');
+    }
+    render();
+  });
+});
+document.getElementById('q').addEventListener('input',e=>{q=e.target.value.toLowerCase();render();});
+document.getElementById('sort').addEventListener('change',e=>{sort=e.target.value;render();});
+document.getElementById('overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeCar(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && currentSlug) closeCar(); });
+
+(async()=>{
+  if(!hasCloud) idb = await openIDB();
+  render();
+  loadCovers();
+})();
+</script>
+</body>
+</html>

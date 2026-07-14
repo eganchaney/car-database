@@ -1,0 +1,9 @@
+node_modules/
+dist/
+
+# handoff/source material from the old single-file app (not needed by the site)
+pagani-photos-backup.json
+Car Photos/
+
+# local Claude Code settings
+.claude/settings.local.json
