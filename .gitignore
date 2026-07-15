@@ -7,3 +7,7 @@ Car Photos/
 
 # local Claude Code settings
 .claude/settings.local.json
+
+# generated from "Car Database.xlsx" by scripts/build-data.mjs — do not edit
+public/data/*.json
+!public/data/brands.json

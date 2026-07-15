@@ -54,6 +54,20 @@ export const slugOf = car => car.id.split('/')[1]
 export const imageUrl = (car, file) => `${BASE}images/${car.id}/${file}`
 export const coverUrl = car => (car.images?.length ? imageUrl(car, car.images[0]) : null)
 
+// First number in a value: "1,018 (E85) / 806 (petrol)" -> 1018, "~2,400 (est.)" -> 2400.
+// Returns null for non-numeric strings like "Not published".
+export function numOf(v) {
+  if (typeof v === 'number') return v
+  const m = /[\d][\d,]*(\.\d+)?/.exec(String(v ?? ''))
+  return m ? parseFloat(m[0].replace(/,/g, '')) : null
+}
+
+// Compact display for card stats: parsed number or an em dash.
+export function statOf(v) {
+  const n = numOf(v)
+  return n == null ? '—' : n.toLocaleString()
+}
+
 export function isOneOff(car) {
   return /one-off/i.test(car.market.status) || /^1\b/.test(String(car.market.production))
 }

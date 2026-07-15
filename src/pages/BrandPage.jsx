@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { fetchBrands, fetchBrandData } from '../lib/data.js'
+import { fetchBrands, fetchBrandData, numOf } from '../lib/data.js'
 import { applyTheme, familyAccent } from '../lib/theme.js'
 import CarCard from '../components/CarCard.jsx'
 
@@ -9,7 +9,7 @@ export default function BrandPage() {
   const [brand, setBrand] = useState(null)
   const [cars, setCars] = useState(null)
   const [missing, setMissing] = useState(false)
-  const [filter, setFilter] = useState('all')     // 'all' | family name | 'road' | 'track'
+  const [filter, setFilter] = useState('all')     // 'all' | family | 'd:1960' | 'road' | 'track'
   const [q, setQ] = useState('')
   const [sort, setSort] = useState('year')
 
@@ -21,14 +21,22 @@ export default function BrandPage() {
       if (!b) { setMissing(true); return }
       setBrand(b)
       applyTheme(b.theme)
-      fetchBrandData(b).then(d => setCars(d.cars))
+      fetchBrandData(b).then(d => setCars(d.cars)).catch(() => setMissing(true))
     })
     return () => applyTheme(null)
   }, [brandId])
 
   const families = useMemo(
-    () => cars ? [...new Set(cars.map(c => c.family))] : [],
+    () => cars ? [...new Set(cars.map(c => c.family).filter(Boolean))] : [],
     [cars],
+  )
+  // Brands without curated families (e.g. Ferrari's 100+ model lines) get
+  // decade chips instead, derived from the data.
+  const decades = useMemo(
+    () => (cars && !families.length)
+      ? [...new Set(cars.map(c => Math.floor(c.year / 10) * 10))].sort((a, b) => a - b)
+      : [],
+    [cars, families],
   )
 
   const visible = useMemo(() => {
@@ -36,13 +44,14 @@ export default function BrandPage() {
     const needle = q.trim().toLowerCase()
     const list = cars.filter(c => {
       if (families.includes(filter) && c.family !== filter) return false
+      if (filter.startsWith('d:') && Math.floor(c.year / 10) * 10 !== +filter.slice(2)) return false
       if (filter === 'road' && c.market.road_legal !== true) return false
       if (filter === 'track' && c.market.road_legal !== false) return false
       if (needle && !c.model.toLowerCase().includes(needle)) return false
       return true
     })
     list.sort((a, b) =>
-      sort === 'hp' ? b.specs.horsepower_hp - a.specs.horsepower_hp :
+      sort === 'hp' ? (numOf(b.specs.horsepower_hp) ?? 0) - (numOf(a.specs.horsepower_hp) ?? 0) :
       sort === 'name' ? a.model.localeCompare(b.model) :
       a.year - b.year)
     return list
@@ -81,27 +90,38 @@ export default function BrandPage() {
         <p className="sub">{hero.sub || brand.tagline}</p>
       </header>
 
-      <div className="controls">
-        {chip('all', 'All')}
-        {families.map(f => chip(f, f, familyAccent(brand, f)))}
-        {chip('road', 'Road legal')}
-        {chip('track', 'Track only')}
-        <span className="spacer" />
-        <input
-          className="search" type="text" placeholder="Search models…"
-          value={q} onChange={e => setQ(e.target.value)}
-        />
-        <select value={sort} onChange={e => setSort(e.target.value)}>
-          <option value="year">Sort · Year</option>
-          <option value="hp">Sort · Horsepower</option>
-          <option value="name">Sort · Name</option>
-        </select>
-        <span className="count">{visible.length} / {cars.length} cars</span>
-      </div>
+      {cars.length === 0 ? (
+        <div className="hsect" style={{ marginTop: 30, paddingBottom: 90 }}>
+          <div className="empty-note">
+            No cars yet — add {brand.name} rows to <b>Car Database.xlsx</b> and they'll appear here.
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="controls">
+            {chip('all', 'All')}
+            {families.map(f => chip(f, f, familyAccent(brand, f)))}
+            {decades.map(d => chip(`d:${d}`, `${d}s`))}
+            {chip('road', 'Road legal')}
+            {chip('track', 'Track only')}
+            <span className="spacer" />
+            <input
+              className="search" type="text" placeholder="Search models…"
+              value={q} onChange={e => setQ(e.target.value)}
+            />
+            <select value={sort} onChange={e => setSort(e.target.value)}>
+              <option value="year">Sort · Year</option>
+              <option value="hp">Sort · Horsepower</option>
+              <option value="name">Sort · Name</option>
+            </select>
+            <span className="count">{visible.length} / {cars.length} cars</span>
+          </div>
 
-      <main className="grid">
-        {visible.map(car => <CarCard key={car.id} car={car} brand={brand} />)}
-      </main>
+          <main className="grid">
+            {visible.map(car => <CarCard key={car.id} car={car} brand={brand} />)}
+          </main>
+        </>
+      )}
     </>
   )
 }

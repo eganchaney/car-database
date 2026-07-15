@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { coverUrl, initials, isOneOff } from '../lib/data.js'
+import { coverUrl, initials, isOneOff, statOf } from '../lib/data.js'
 import { familyAccent } from '../lib/theme.js'
 import { toggleFavorite, useFavorites } from '../lib/favorites.js'
 
@@ -45,9 +45,9 @@ export default function CarCard({ car, brand, showBrand = false }) {
         </div>
         <Tags car={car} />
         <div className="cstats">
-          <span><b>{car.specs.horsepower_hp}</b> hp</span>
-          <span><b>{car.specs.weight_lbs.toLocaleString()}</b> lbs</span>
-          <span><b>{car.specs.zero_to_sixty_s}</b>s 0-60</span>
+          <span><b>{statOf(car.specs.horsepower_hp)}</b> hp</span>
+          <span><b>{statOf(car.specs.weight_lbs)}</b> lbs</span>
+          <span><b>{statOf(car.specs.zero_to_sixty_s)}</b>s 0-60</span>
         </div>
       </div>
     </Link>

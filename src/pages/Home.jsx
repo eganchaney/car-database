@@ -23,7 +23,9 @@ export default function Home() {
   const cotd = carOfTheDay(all)
   const newest = all.slice(-4).reverse()
   const oneOffs = all.filter(e => isOneOff(e.car)).length
-  const activeBrands = brands.filter(b => b.data)
+  const countByBrand = new Map()
+  all.forEach(e => countByBrand.set(e.brand.id, (countByBrand.get(e.brand.id) || 0) + 1))
+  const activeBrands = brands.filter(b => countByBrand.get(b.id))
 
   return (
     <>
@@ -47,19 +49,19 @@ export default function Home() {
       <section className="hsect">
         <h2>Brands</h2>
         <div className="brandix">
-          {brands.map(b => b.data ? (
+          {brands.map(b => countByBrand.get(b.id) ? (
             <Link key={b.id} className="brandcard" to={`/${b.id}`} style={{ '--fam': b.theme?.accent }}>
               <span className="bspine" />
-              <div className="bmeta">{b.country}{b.founded ? ` · EST. ${b.founded}` : ''}</div>
+              <div className="bmeta">{b.country}{b.founded ? ` · EST. ${b.founded}` : ''} · {countByBrand.get(b.id)} cars</div>
               <div className="bname">{b.name}</div>
               <div className="btag">{b.tagline}</div>
             </Link>
           ) : (
-            <div key={b.id} className="brandcard planned">
+            <div key={b.id} className="brandcard planned" style={{ '--fam': b.theme?.accent }}>
               <span className="bspine" />
               <div className="bmeta">{b.country} · Coming soon</div>
               <div className="bname">{b.name}</div>
-              <div className="btag">{b.theme_direction}</div>
+              <div className="btag">{b.tagline || b.theme_direction}</div>
             </div>
           ))}
         </div>

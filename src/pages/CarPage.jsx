@@ -59,7 +59,9 @@ export default function CarPage() {
   const s = car.specs, m = car.market
   const heroImg = car.images?.[0]
   const heroCredit = heroImg ? credits[heroImg] : null
-  const topSpeed = typeof s.top_speed_mph === 'number' ? `${s.top_speed_mph} mph` : s.top_speed_mph
+  // Append a unit only when the value is a plain number — vintage cars carry
+  // strings like "Not published" or "~2,400 (est.)" that already explain themselves.
+  const unit = (v, u) => (typeof v === 'number' ? `${v.toLocaleString()} ${u}` : v)
 
   return (
     <div style={fam ? { '--fam': fam } : undefined}>
@@ -86,7 +88,9 @@ export default function CarPage() {
               <span className="dmeta">{car.year} · {brand.name.toUpperCase()}</span>
             </div>
             <div className="tags dtags">
-              {m.road_legal ? <span className="tag">Road legal</span> : <span className="tag track">Track only</span>}
+              {m.road_legal === true && <span className="tag">Road legal</span>}
+              {m.road_legal === false && <span className="tag track">Track only</span>}
+              {typeof m.road_legal === 'string' && <span className="tag">{m.road_legal}</span>}
               {isOneOff(car) && <span className="tag oneoff">One-off</span>}
               <span className="tag">{m.status}</span>
               <FavHeart id={car.id} inline />
@@ -95,16 +99,17 @@ export default function CarPage() {
             <div className="plaque">
               <div className="plaque-title">Build Plaque · Specifications</div>
               <div className="pgrid">
-                <PlaqueItem lab="Horsepower" val={`${s.horsepower_hp} hp`} big />
-                <PlaqueItem lab="Torque" val={`${s.torque_lbft} lb-ft`} big />
-                <PlaqueItem lab="Weight (dry)" val={`${s.weight_lbs.toLocaleString()} lbs`} big />
-                <PlaqueItem lab="0–60 mph" val={`${s.zero_to_sixty_s} s`} big />
-                <PlaqueItem lab="Top speed" val={topSpeed} big />
+                <PlaqueItem lab="Horsepower" val={unit(s.horsepower_hp, 'hp')} big />
+                <PlaqueItem lab="Torque" val={unit(s.torque_lbft, 'lb-ft')} big />
+                <PlaqueItem lab="Weight (dry)" val={unit(s.weight_lbs, 'lbs')} big />
+                <PlaqueItem lab="0–60 mph" val={unit(s.zero_to_sixty_s, 's')} big />
+                <PlaqueItem lab="Top speed" val={unit(s.top_speed_mph, 'mph')} big />
                 <PlaqueItem lab="Drivetrain" val={s.drivetrain} />
                 <PlaqueItem lab="Engine" val={s.engine} wide />
                 <PlaqueItem lab="Powertrain" val={s.powertrain} wide />
                 <PlaqueItem lab="Downforce" val={s.downforce} wide />
-                <PlaqueItem lab="Price" val={m.price} wide />
+                <PlaqueItem lab="Original price" val={m.price} wide />
+                <PlaqueItem lab="Estimated value (2026)" val={m.value_est} wide />
                 <PlaqueItem lab="Production" val={m.production} wide />
               </div>
             </div>

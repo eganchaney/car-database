@@ -31,18 +31,157 @@
       }
     },
     {
-      "id": "koenigsegg",
-      "name": "Koenigsegg",
-      "country": "Sweden",
-      "status": "planned",
-      "theme_direction": "Icy Scandinavian minimalism — ghost-squadron heritage (the Ängelholm ghost symbol), cold whites/steel blues, geometric sans display font, aerospace precision"
-    },
-    {
       "id": "ferrari",
       "name": "Ferrari",
       "country": "Italy",
-      "status": "planned",
-      "theme_direction": "Rosso corsa on near-black, racing heritage serif or Modena-style display, giallo accents, tifosi energy"
+      "founded": 1947,
+      "tagline": "La leggenda di Maranello",
+      "data": "data/ferrari.json",
+      "hero": {
+        "kicker": "GRAN TURISMO ARCHIVE · MARANELLO",
+        "titlePrefix": "La Leggenda",
+        "titleAccent": "Ferrari",
+        "sub": "From the 125 S to the F80 — every road Ferrari that matters, 1947 to today. Filter by decade to walk the whole history."
+      },
+      "theme": {
+        "accent": "#d63a3a",
+        "familyAccents": {},
+        "background": "#151011",
+        "panel": "#1d1517",
+        "ivory": "#f2e7dc",
+        "displayFont": "'Bodoni Moda', 'Didot', serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave",
+        "motif": "cavallino"
+      }
+    },
+    {
+      "id": "koenigsegg",
+      "name": "Koenigsegg",
+      "country": "Sweden",
+      "founded": 1994,
+      "tagline": "Megacars from the Ängelholm ghost squadron airfield",
+      "data": "data/koenigsegg.json",
+      "hero": {
+        "kicker": "MEGACAR ARCHIVE · ÄNGELHOLM AIRFIELD, SWEDEN",
+        "titlePrefix": "The House of",
+        "titleAccent": "Koenigsegg",
+        "sub": "From the first CC prototype to the Jesko and Gemera — Swedish record hunters built on a ghost-squadron airbase, wearing the squadron's ghost as a badge of honor."
+      },
+      "theme": {
+        "accent": "#9fc0d8",
+        "familyAccents": {
+          "CC": "#9dbfd9",
+          "Agera": "#d7dee6",
+          "Jesko": "#7fa8c9",
+          "Regera": "#b9c8d6",
+          "Gemera": "#a4c6c0"
+        },
+        "background": "#0f1216",
+        "panel": "#161b21",
+        "ivory": "#e9eef3",
+        "displayFont": "'Michroma', 'Arial Narrow', sans-serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave",
+        "motif": "ghost"
+      }
+    },
+    {
+      "id": "bugatti",
+      "name": "Bugatti",
+      "country": "France",
+      "founded": 1909,
+      "tagline": "Le pur-sang des automobiles — Molsheim, Alsace",
+      "data": "data/bugatti.json",
+      "hero": {
+        "kicker": "GRANDE MARQUE ARCHIVE · MOLSHEIM, ALSACE",
+        "titlePrefix": "Le Pur-Sang",
+        "titleAccent": "Bugatti",
+        "sub": "From the Type 13 Brescia and the Royale to the Veyron, Chiron, and Tourbillon — a century of thoroughbreds, 1910 to today."
+      },
+      "theme": {
+        "accent": "#6f95dd",
+        "familyAccents": {
+          "Type": "#c9b37e",
+          "EB110": "#8ea8d8",
+          "Veyron": "#6f95dd",
+          "Chiron": "#4f74b8"
+        },
+        "background": "#10131a",
+        "panel": "#171b24",
+        "ivory": "#e9ecf2",
+        "displayFont": "'Poiret One', 'Futura', sans-serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave",
+        "motif": "horseshoe"
+      }
+    },
+    {
+      "id": "lamborghini",
+      "name": "Lamborghini",
+      "country": "Italy",
+      "founded": 1963,
+      "tagline": "The raging bull of Sant'Agata Bolognese",
+      "data": "data/lamborghini.json",
+      "hero": {
+        "kicker": "RAGING BULL ARCHIVE · SANT'AGATA BOLOGNESE",
+        "titlePrefix": "La Furia",
+        "titleAccent": "Lamborghini",
+        "sub": "The tractor maker who out-Ferrari'd Ferrari — from the Miura that invented the supercar to the Revuelto."
+      },
+      "theme": {
+        "accent": "#e8b33d",
+        "familyAccents": {
+          "Miura": "#e8b33d",
+          "Countach": "#d0d64f",
+          "Diablo": "#c96a4a",
+          "Murciélago": "#9a8fc4",
+          "Aventador": "#d0d64f",
+          "Huracán": "#7fc48f"
+        },
+        "background": "#131210",
+        "panel": "#1b1a16",
+        "ivory": "#efe8d8",
+        "displayFont": "'Exo 2', 'Arial', sans-serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave",
+        "motif": "bull"
+      }
+    },
+    {
+      "id": "mclaren",
+      "name": "McLaren",
+      "country": "United Kingdom",
+      "founded": 1985,
+      "tagline": "Racing DNA from Woking — papaya orange since Bruce",
+      "data": "data/mclaren.json",
+      "hero": {
+        "kicker": "TECHNICAL ARCHIVE · WOKING, SURREY",
+        "titlePrefix": "The Science of",
+        "titleAccent": "McLaren",
+        "sub": "From the F1 — still the fastest naturally aspirated car ever — to the Senna, Speedtail, and W1. Carbon tubs and lap times over theater."
+      },
+      "theme": {
+        "accent": "#ff8730",
+        "familyAccents": {
+          "F1": "#ff8730",
+          "P1": "#5bb8c4",
+          "Senna": "#c4d64f",
+          "Speedtail": "#8fa3c4"
+        },
+        "background": "#101214",
+        "panel": "#171a1e",
+        "ivory": "#ebeced",
+        "displayFont": "'Titillium Web', 'Arial', sans-serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave",
+        "motif": "speedmark"
+      }
     }
   ]
 }
