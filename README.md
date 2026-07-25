@@ -29,9 +29,11 @@ One row per car. Required columns: `Manufacturer`, `Model`, `Year` — plus the
 spec/market/story columns (see existing rows). Rules:
 
 - `Manufacturer` must match a brand name in `public/data/brands.json`
-  (currently: Pagani, Ferrari, Koenigsegg, Bugatti, Lamborghini, McLaren).
-  Rows for a manufacturer not listed there are skipped with a warning —
-  add a brand entry (theme + hero text) to bring a new marque online.
+  (39 marques are themed there today — run `npm run data` and read the log
+  to see the full list). Rows for a manufacturer not listed there are
+  skipped with a warning; add a brand entry (accent color, family accents,
+  display font, hero text) to bring a new marque online, plus its font to
+  the Google Fonts link in `index.html` if it needs one.
 - The car's URL slug is derived from `Model` ("Zonda C12 S" → `zonda-c12-s`).
   Renaming a model changes its slug — rename its image folder to match.
 - Spec cells can be numbers or strings ("~2,400 (est.)", "Not published");

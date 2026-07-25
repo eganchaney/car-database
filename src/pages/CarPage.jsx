@@ -22,7 +22,6 @@ export default function CarPage() {
 
   useEffect(() => {
     setState(null); setCredits({}); setLightbox(null)
-    window.scrollTo(0, 0)
     fetchBrands().then(async brands => {
       const brand = brands.find(x => x.id === brandId && x.data)
       if (!brand) { setState('missing'); return }
