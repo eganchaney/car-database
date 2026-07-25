@@ -91,7 +91,9 @@ export default function CarPage() {
               {m.road_legal === false && <span className="tag track">Track only</span>}
               {typeof m.road_legal === 'string' && <span className="tag">{m.road_legal}</span>}
               {isOneOff(car) && <span className="tag oneoff">One-off</span>}
-              <span className="tag">{m.status}</span>
+              {/* Many one-offs also carry "One-off" as their status — don't say it twice */}
+              {!(isOneOff(car) && /^one-off$/i.test(String(m.status).trim())) &&
+                <span className="tag">{m.status}</span>}
               <FavHeart id={car.id} inline />
             </div>
 
