@@ -70,8 +70,13 @@ Either way, `credits.json` maps a filename to its credit string:
 { "agera-rs.jpg": "Photo: Name, CC BY-SA 4.0, Wikimedia Commons" }
 ```
 
-Photos should be web resolution (~1600px, quality 85). Files that don't match
-any car slug are reported in the build log and skipped.
+**Upload photos at whatever quality you like — the build handles the rest.**
+Card grids (brand pages, home page, the gallery strip) are served a generated
+560px WebP cover from `public/thumbs/`, which is ~93% smaller, while a car's
+own page shows your original file untouched. `public/thumbs/` is generated and
+gitignored; `public/images/` is never modified.
+
+Files that don't match any car slug are reported in the build log and skipped.
 
 To upload through GitHub web, go straight to the brand folder's upload page —
 `github.com/<you>/car-database/upload/main/public/images/<brand>` — and drop

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { fetchBrands, fetchBrandData, imageUrl, initials, isOneOff } from '../lib/data.js'
+import { fetchBrands, fetchBrandData, imageUrl, thumbUrl, initials, isOneOff } from '../lib/data.js'
 import { applyTheme, familyAccent } from '../lib/theme.js'
 import { FavHeart, Tags } from '../components/CarCard.jsx'
 
@@ -73,7 +73,7 @@ export default function CarPage() {
         <article className="sheet">
           <div className="hero">
             {heroImg
-              ? <img src={imageUrl(car, heroImg.file)} alt={car.model} />
+              ? <img src={imageUrl(car, heroImg)} alt={car.model} />
               : <div className="mono-mark">{initials(car)}</div>}
             {heroImg?.credit && <div className="hero-credit">{heroImg.credit}</div>}
             <span className="fam-band" />
@@ -123,7 +123,7 @@ export default function CarPage() {
                   {car.images.map(img => (
                     <figure className="gfig" key={img.file}>
                       <button className="gitem" onClick={() => setLightbox(img)} aria-label={`View photo of ${car.model}`}>
-                        <img src={imageUrl(car, img.file)} alt={car.model} loading="lazy" />
+                        <img src={thumbUrl(car, img)} alt={car.model} loading="lazy" />
                       </button>
                       <figcaption className="gcredit">{img.credit}</figcaption>
                     </figure>
@@ -139,7 +139,7 @@ export default function CarPage() {
 
       {lightbox && (
         <button className="lightbox" onClick={() => setLightbox(null)} aria-label="Close photo">
-          <img src={imageUrl(car, lightbox.file)} alt={car.model} />
+          <img src={imageUrl(car, lightbox)} alt={car.model} />
           <span className="gcredit">{lightbox.credit}</span>
         </button>
       )}

@@ -40,11 +40,13 @@ export async function fetchAllCars() {
 }
 
 export const slugOf = car => car.id.split('/')[1]
-// `file` is a path relative to the brand's image folder — either "<slug>/1.jpg"
-// (nested layout) or "<slug>.jpg" (flat layout). Credits are baked into the
-// data at build time, so there's nothing to fetch at runtime.
-export const imageUrl = (car, file) => `${BASE}images/${car.brand}/${file}`
-export const coverUrl = car => (car.images?.length ? imageUrl(car, car.images[0].file) : null)
+// Each image entry has `file` (the original as uploaded) and `thumb` (a 560px
+// WebP built at compile time). Card grids use thumbs so a page of 40 cars stays
+// light; a car's own page uses the original at full quality. Credits are baked
+// into the data at build time, so there's nothing to fetch at runtime.
+export const imageUrl = (car, img) => `${BASE}images/${car.brand}/${img.file}`
+export const thumbUrl = (car, img) => `${BASE}thumbs/${car.brand}/${img.thumb}`
+export const coverUrl = car => (car.images?.length ? thumbUrl(car, car.images[0]) : null)
 
 // First number in a value: "1,018 (E85) / 806 (petrol)" -> 1018, "~2,400 (est.)" -> 2400.
 // Returns null for non-numeric strings like "Not published".

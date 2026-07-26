@@ -7,6 +7,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import * as XLSX from 'xlsx'
+import { buildImages, derivedPath } from './build-images.mjs'
+
+await buildImages()
 
 const ROOT = path.resolve(import.meta.dirname, '..')
 const XLSX_PATH = path.join(ROOT, 'Car Database.xlsx')
@@ -75,7 +78,13 @@ function scanBrandImages(brandId, slugs) {
 
   for (const list of found.values()) {
     list.sort((a, b) => a.order - b.order || a.name.localeCompare(b.name))
-    list.forEach(p => { delete p.order; delete p.name })
+    // `file` is the original (served on a car's own page, full quality);
+    // `thumb` is the generated 560px cover used by every card grid.
+    list.forEach(p => {
+      p.thumb = derivedPath(p.file)
+      delete p.order
+      delete p.name
+    })
   }
   return found
 }
