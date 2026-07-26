@@ -22,6 +22,54 @@ const slugify = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace
 const IMG_EXT = /\.(jpe?g|png|webp|avif)$/i
 const readJSON = p => (fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : {})
 
+// Works out which car a loose file in the brand folder belongs to. Files
+// downloaded from the web rarely arrive named exactly like the slug, so this
+// forgives case, underscores, a repeated brand name, and a trailing "-1":
+//
+//   Koenigsegg-CCR-1.webp        → ccr
+//   koenigsegg_ccxr_special-1.jpg → ccxr-special-edition
+//   koenigsegg_regera-2.png      → regera, second photo
+//
+// An exact slug is always tried first, so "agera-rs1.jpg" stays its own car
+// rather than being read as photo 1 of "agera-rs". A loose match is only
+// accepted when exactly one car fits — ambiguity is reported, never guessed.
+function matchFlatFile(base, brandId, found) {
+  const norm = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+  const candidates = []
+  const n = norm(base)
+  candidates.push([n, 1])
+  const numbered = /^(.*)-(\d+)$/.exec(n)
+  if (numbered) candidates.push([numbered[1], Number(numbered[2])])
+  // the same list again with a leading brand name ("koenigsegg-…") removed
+  for (const [c, order] of [...candidates]) {
+    if (c.startsWith(`${brandId}-`)) {
+      const stripped = c.slice(brandId.length + 1)
+      candidates.push([stripped, order])
+      const m = /^(.*)-(\d+)$/.exec(stripped)
+      if (m) candidates.push([m[1], Number(m[2])])
+    }
+  }
+  for (const [c, order] of candidates) {
+    if (found.has(c)) return { slug: c, order }
+  }
+  // Last resort: a partial name, accepted only when it fits exactly one car.
+  // A filename that is part of a slug ("ccxr-edition" inside
+  // "ccx-edition-ccxr-edition") is the stronger signal, so it is tried first —
+  // otherwise a shorter sibling slug like "ccxr" would make it look ambiguous.
+  const slugs = [...found.keys()]
+  for (const [c, order] of candidates) {
+    if (c.length < 3) continue
+    const inside = slugs.filter(s => s.includes(c))
+    if (inside.length === 1) return { slug: inside[0], order }
+  }
+  for (const [c, order] of candidates) {
+    if (c.length < 3) continue
+    const contains = slugs.filter(s => c.includes(s))
+    if (contains.length === 1) return { slug: contains[0], order }
+  }
+  return null
+}
+
 // Two photo layouts are supported, so you can use whichever is less work:
 //
 //   nested — public/images/<brand>/<slug>/1.jpg  + that folder's credits.json
@@ -54,20 +102,12 @@ function scanBrandImages(brandId, slugs) {
       continue
     }
     if (!IMG_EXT.test(entry.name)) continue
-    const base = entry.name.replace(IMG_EXT, '')
-    // Longest match wins, so "agera-rs1.jpg" is its own car rather than
-    // being read as photo 1 of "agera-rs".
-    let slug = found.has(base) ? base : null
-    let order = 1
-    const numbered = /^(.*)-(\d+)$/.exec(base)
-    if (!slug && numbered && found.has(numbered[1])) {
-      slug = numbered[1]
-      order = Number(numbered[2])
-    }
-    if (!slug) {
-      console.warn(`WARNING: images/${brandId}/${entry.name} doesn't match any car slug — skipped.`)
+    const match = matchFlatFile(entry.name.replace(IMG_EXT, ''), brandId, found)
+    if (!match) {
+      console.warn(`WARNING: images/${brandId}/${entry.name} doesn't match any car — skipped.`)
       continue
     }
+    const { slug, order } = match
     found.get(slug).push({
       file: entry.name,
       credit: brandCredits[entry.name] || '',
