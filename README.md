@@ -42,16 +42,40 @@ spec/market/story columns (see existing rows). Rules:
 
 ## Adding photos
 
-1. Find the car's slug (it's in the URL: `#/pagani/zonda-f` → `zonda-f`).
-2. Put photos in `public/images/<brand>/<slug>/`, numbered `1.jpg`, `2.jpg`…
-   — lowest number is the cover/hero. Web resolution (~1600px, quality 85).
-3. Add a credit for each photo to `credits.json` in the same folder:
-   ```json
-   { "1.jpg": "Photo: Name, CC BY-SA 4.0, Wikimedia Commons" }
-   ```
-4. Push (or upload the files through GitHub web: navigate into
-   `public/images/<brand>/`, *Add file → Upload files* — GitHub creates the
-   folder if you type `<slug>/1.jpg` as the path).
+Two layouts work — use whichever is less effort. A car's slug is the last part
+of its URL (`#/pagani/zonda-f` → `zonda-f`).
+
+**Flat (best for bulk uploads).** Name each file after the car's slug and drop
+them all in the brand folder — one folder for the entire brand, so a whole
+batch goes up in a single drag-and-drop:
+
+```
+public/images/koenigsegg/agera-rs.jpg        ← cover
+public/images/koenigsegg/agera-rs-2.jpg      ← second photo
+public/images/koenigsegg/jesko.jpg
+public/images/koenigsegg/credits.json        ← one credits file per brand
+```
+
+**Nested (good when one car has many photos).** A folder per car, numbered:
+
+```
+public/images/pagani/zonda-f/1.jpg           ← cover
+public/images/pagani/zonda-f/2.jpg
+public/images/pagani/zonda-f/credits.json
+```
+
+Either way, `credits.json` maps a filename to its credit string:
+
+```json
+{ "agera-rs.jpg": "Photo: Name, CC BY-SA 4.0, Wikimedia Commons" }
+```
+
+Photos should be web resolution (~1600px, quality 85). Files that don't match
+any car slug are reported in the build log and skipped.
+
+To upload through GitHub web, go straight to the brand folder's upload page —
+`github.com/<you>/car-database/upload/main/public/images/<brand>` — and drop
+in the whole batch at once.
 
 **Licensing rules** (see VISION.md): publish-safe sources only — Wikimedia
 Commons, CC-filtered Flickr/Openverse, own photos, or written permission.

@@ -17,13 +17,67 @@ const IMG_DIR = path.join(ROOT, 'public', 'images')
 const slugify = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 
 const IMG_EXT = /\.(jpe?g|png|webp|avif)$/i
+const readJSON = p => (fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : {})
 
-function imagesFor(brandId, slug) {
-  const dir = path.join(IMG_DIR, brandId, slug)
-  if (!fs.existsSync(dir)) return []
-  return fs.readdirSync(dir)
-    .filter(f => IMG_EXT.test(f))
-    .sort((a, b) => (parseInt(a, 10) || 9999) - (parseInt(b, 10) || 9999) || a.localeCompare(b))
+// Two photo layouts are supported, so you can use whichever is less work:
+//
+//   nested — public/images/<brand>/<slug>/1.jpg  + that folder's credits.json
+//   flat   — public/images/<brand>/<slug>.jpg    + the brand folder's credits.json
+//            (extra photos: <slug>-2.jpg, <slug>-3.jpg …)
+//
+// The flat layout means every car in a brand lives in ONE folder, so a whole
+// brand's photos can be uploaded in a single drag-and-drop.
+// Returns, per car slug, [{ file: <path relative to the brand folder>, credit }].
+function scanBrandImages(brandId, slugs) {
+  const brandDir = path.join(IMG_DIR, brandId)
+  const found = new Map(slugs.map(s => [s, []]))
+  if (!fs.existsSync(brandDir)) return found
+
+  const brandCredits = readJSON(path.join(brandDir, 'credits.json'))
+
+  for (const entry of fs.readdirSync(brandDir, { withFileTypes: true })) {
+    if (entry.isDirectory()) {
+      if (!found.has(entry.name)) continue
+      const credits = readJSON(path.join(brandDir, entry.name, 'credits.json'))
+      for (const f of fs.readdirSync(path.join(brandDir, entry.name))) {
+        if (!IMG_EXT.test(f)) continue
+        found.get(entry.name).push({
+          file: `${entry.name}/${f}`,
+          credit: credits[f] || '',
+          order: parseInt(f, 10) || Number.MAX_SAFE_INTEGER,
+          name: f,
+        })
+      }
+      continue
+    }
+    if (!IMG_EXT.test(entry.name)) continue
+    const base = entry.name.replace(IMG_EXT, '')
+    // Longest match wins, so "agera-rs1.jpg" is its own car rather than
+    // being read as photo 1 of "agera-rs".
+    let slug = found.has(base) ? base : null
+    let order = 1
+    const numbered = /^(.*)-(\d+)$/.exec(base)
+    if (!slug && numbered && found.has(numbered[1])) {
+      slug = numbered[1]
+      order = Number(numbered[2])
+    }
+    if (!slug) {
+      console.warn(`WARNING: images/${brandId}/${entry.name} doesn't match any car slug — skipped.`)
+      continue
+    }
+    found.get(slug).push({
+      file: entry.name,
+      credit: brandCredits[entry.name] || '',
+      order,
+      name: entry.name,
+    })
+  }
+
+  for (const list of found.values()) {
+    list.sort((a, b) => a.order - b.order || a.name.localeCompare(b.name))
+    list.forEach(p => { delete p.order; delete p.name })
+  }
+  return found
 }
 
 function roadLegal(v) {
@@ -96,8 +150,15 @@ for (const row of rows) {
       engineering: row['Engineering'],
       records: row['Records & Claims to Fame'],
     },
-    images: imagesFor(brand.id, slug),
+    images: [],
   })
+}
+
+// Photos are matched per brand, since the flat layout keeps every car of a
+// brand in one folder and needs the brand's full slug list to disambiguate.
+for (const [id, cars] of carsByBrand) {
+  const found = scanBrandImages(id, cars.map(c => c.id.split('/')[1]))
+  for (const car of cars) car.images = found.get(car.id.split('/')[1]) || []
 }
 
 fs.mkdirSync(DATA_DIR, { recursive: true })

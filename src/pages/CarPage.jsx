@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { fetchBrands, fetchBrandData, fetchCredits, imageUrl, initials, isOneOff } from '../lib/data.js'
+import { fetchBrands, fetchBrandData, imageUrl, initials, isOneOff } from '../lib/data.js'
 import { applyTheme, familyAccent } from '../lib/theme.js'
 import { FavHeart, Tags } from '../components/CarCard.jsx'
 
@@ -17,11 +17,10 @@ function PlaqueItem({ lab, val, big = false, wide = false }) {
 export default function CarPage() {
   const { brandId, slug } = useParams()
   const [state, setState] = useState(null) // { brand, car } | 'missing'
-  const [credits, setCredits] = useState({})
-  const [lightbox, setLightbox] = useState(null) // image filename or null
+  const [lightbox, setLightbox] = useState(null) // { file, credit } or null
 
   useEffect(() => {
-    setState(null); setCredits({}); setLightbox(null)
+    setState(null); setLightbox(null)
     fetchBrands().then(async brands => {
       const brand = brands.find(x => x.id === brandId && x.data)
       if (!brand) { setState('missing'); return }
@@ -30,7 +29,6 @@ export default function CarPage() {
       if (!car) { setState('missing'); return }
       applyTheme(brand.theme)
       setState({ brand, car })
-      if (car.images?.length) fetchCredits(car.id).then(setCredits)
     })
     return () => applyTheme(null)
   }, [brandId, slug])
@@ -57,7 +55,6 @@ export default function CarPage() {
   const fam = familyAccent(brand, car.family)
   const s = car.specs, m = car.market
   const heroImg = car.images?.[0]
-  const heroCredit = heroImg ? credits[heroImg] : null
   // Append a unit only when the value is a plain number — vintage cars carry
   // strings like "Not published" or "~2,400 (est.)" that already explain themselves.
   const unit = (v, u) => (typeof v === 'number' ? `${v.toLocaleString()} ${u}` : v)
@@ -76,9 +73,9 @@ export default function CarPage() {
         <article className="sheet">
           <div className="hero">
             {heroImg
-              ? <img src={imageUrl(car, heroImg)} alt={car.model} />
+              ? <img src={imageUrl(car, heroImg.file)} alt={car.model} />
               : <div className="mono-mark">{initials(car)}</div>}
-            {heroCredit && <div className="hero-credit">{heroCredit}</div>}
+            {heroImg?.credit && <div className="hero-credit">{heroImg.credit}</div>}
             <span className="fam-band" />
           </div>
           <div className="inner">
@@ -123,12 +120,12 @@ export default function CarPage() {
               <h3>Photos</h3>
               {car.images?.length ? (
                 <div className="gal">
-                  {car.images.map(f => (
-                    <figure className="gfig" key={f}>
-                      <button className="gitem" onClick={() => setLightbox(f)} aria-label={`View photo of ${car.model}`}>
-                        <img src={imageUrl(car, f)} alt={car.model} loading="lazy" />
+                  {car.images.map(img => (
+                    <figure className="gfig" key={img.file}>
+                      <button className="gitem" onClick={() => setLightbox(img)} aria-label={`View photo of ${car.model}`}>
+                        <img src={imageUrl(car, img.file)} alt={car.model} loading="lazy" />
                       </button>
-                      <figcaption className="gcredit">{credits[f] || ''}</figcaption>
+                      <figcaption className="gcredit">{img.credit}</figcaption>
                     </figure>
                   ))}
                 </div>
@@ -142,8 +139,8 @@ export default function CarPage() {
 
       {lightbox && (
         <button className="lightbox" onClick={() => setLightbox(null)} aria-label="Close photo">
-          <img src={imageUrl(car, lightbox)} alt={car.model} />
-          <span className="gcredit">{credits[lightbox] || ''}</span>
+          <img src={imageUrl(car, lightbox.file)} alt={car.model} />
+          <span className="gcredit">{lightbox.credit}</span>
         </button>
       )}
     </div>

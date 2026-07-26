@@ -39,20 +39,12 @@ export async function fetchAllCars() {
   return datasets.flatMap((d, i) => d.cars.map(car => ({ car, brand: brands[i] })))
 }
 
-const creditsCache = new Map()
-export function fetchCredits(carId) {
-  // carId is "brand/slug"; credits live at images/<brand>/<slug>/credits.json
-  if (!creditsCache.has(carId)) {
-    creditsCache.set(carId, fetch(`${BASE}images/${carId}/credits.json`)
-      .then(r => (r.ok ? r.json() : {}))
-      .catch(() => ({})))
-  }
-  return creditsCache.get(carId)
-}
-
 export const slugOf = car => car.id.split('/')[1]
-export const imageUrl = (car, file) => `${BASE}images/${car.id}/${file}`
-export const coverUrl = car => (car.images?.length ? imageUrl(car, car.images[0]) : null)
+// `file` is a path relative to the brand's image folder — either "<slug>/1.jpg"
+// (nested layout) or "<slug>.jpg" (flat layout). Credits are baked into the
+// data at build time, so there's nothing to fetch at runtime.
+export const imageUrl = (car, file) => `${BASE}images/${car.brand}/${file}`
+export const coverUrl = car => (car.images?.length ? imageUrl(car, car.images[0].file) : null)
 
 // First number in a value: "1,018 (E85) / 806 (petrol)" -> 1018, "~2,400 (est.)" -> 2400.
 // Returns null for non-numeric strings like "Not published".
