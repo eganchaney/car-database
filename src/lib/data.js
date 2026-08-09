@@ -62,6 +62,20 @@ export function statOf(v) {
   return n == null ? '—' : n.toLocaleString()
 }
 
+// Appends a unit to a measurement. Some spreadsheet cells arrive as text
+// ("590") rather than numbers, so a plain numeric string is treated as a
+// number; prose like "~2,400 (est.)" or "Not published" is left to speak
+// for itself.
+export function withUnit(value, unit) {
+  if (value == null || value === '') return null
+  if (typeof value === 'number') return unit ? `${value.toLocaleString()} ${unit}` : String(value)
+  const text = String(value).trim()
+  if (unit && /^[\d,]+(\.\d+)?$/.test(text)) {
+    return `${Number(text.replace(/,/g, '')).toLocaleString()} ${unit}`
+  }
+  return text
+}
+
 export function isOneOff(car) {
   return /one-off/i.test(car.market.status) || /^1\b/.test(String(car.market.production))
 }

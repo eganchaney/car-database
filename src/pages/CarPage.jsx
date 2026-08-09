@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { fetchBrands, fetchBrandData, imageUrl, thumbUrl, initials, isOneOff } from '../lib/data.js'
+import { fetchBrands, fetchBrandData, imageUrl, thumbUrl, initials, isOneOff, withUnit } from '../lib/data.js'
 import { applyTheme, familyAccent } from '../lib/theme.js'
 import { FavHeart, Tags } from '../components/CarCard.jsx'
 
@@ -55,9 +55,7 @@ export default function CarPage() {
   const fam = familyAccent(brand, car.family)
   const s = car.specs, m = car.market
   const heroImg = car.images?.[0]
-  // Append a unit only when the value is a plain number — vintage cars carry
-  // strings like "Not published" or "~2,400 (est.)" that already explain themselves.
-  const unit = (v, u) => (typeof v === 'number' ? `${v.toLocaleString()} ${u}` : v)
+  const unit = withUnit
 
   return (
     <div style={fam ? { '--fam': fam } : undefined}>
@@ -91,6 +89,7 @@ export default function CarPage() {
               {/* Many one-offs also carry "One-off" as their status — don't say it twice */}
               {!(isOneOff(car) && /^one-off$/i.test(String(m.status).trim())) &&
                 <span className="tag">{m.status}</span>}
+              <Link className="tag tag-action" to={`/compare/${car.id}`}>Compare with…</Link>
               <FavHeart id={car.id} inline />
             </div>
 
