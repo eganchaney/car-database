@@ -23,6 +23,27 @@ const slugify = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace
 const IMG_EXT = /\.(jpe?g|png|webp|avif)$/i
 const readJSON = p => (fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : {})
 
+// Reads the file's own header to tell whether it is an image. Model names
+// containing a dot ("Veyron 16.4", "Zonda S 7.3", "T.50") lose their real
+// extension when saved, and the file would otherwise be ignored in silence.
+function sniffImage(file) {
+  let fd
+  try {
+    fd = fs.openSync(file, 'r')
+    const head = Buffer.alloc(12)
+    fs.readSync(fd, head, 0, 12, 0)
+    if (head[0] === 0xff && head[1] === 0xd8) return 'jpg'
+    if (head.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return 'png'
+    if (head.subarray(0, 4).toString('latin1') === 'RIFF' && head.subarray(8, 12).toString('latin1') === 'WEBP') return 'webp'
+    if (head.subarray(4, 8).toString('latin1') === 'ftyp') return 'avif'
+    return null
+  } catch {
+    return null
+  } finally {
+    if (fd !== undefined) fs.closeSync(fd)
+  }
+}
+
 // Two photo layouts are supported, so you can use whichever is less work:
 //
 //   nested — public/images/<brand>/<slug>/1.jpg  + that folder's credits.json
@@ -44,7 +65,13 @@ function scanBrandImages(brandId, slugs, report) {
       if (!found.has(entry.name)) continue
       const credits = readJSON(path.join(brandDir, entry.name, 'credits.json'))
       for (const f of fs.readdirSync(path.join(brandDir, entry.name))) {
-        if (!IMG_EXT.test(f)) continue
+        if (!IMG_EXT.test(f)) {
+          if (f !== 'credits.json') {
+            const ext = sniffImage(path.join(brandDir, entry.name, f))
+            if (ext) report.badExtension.push({ brandId, file: `${entry.name}/${f}`, ext })
+          }
+          continue
+        }
         found.get(entry.name).push({
           file: `${entry.name}/${f}`,
           credit: credits[f] || '',
@@ -54,7 +81,13 @@ function scanBrandImages(brandId, slugs, report) {
       }
       continue
     }
-    if (!IMG_EXT.test(entry.name)) continue
+    if (!IMG_EXT.test(entry.name)) {
+      if (entry.name !== 'credits.json') {
+        const ext = sniffImage(path.join(brandDir, entry.name))
+        if (ext) report.badExtension.push({ brandId, file: entry.name, ext })
+      }
+      continue
+    }
     const match = matchPhotoToCar(entry.name.replace(IMG_EXT, ''), brandId, found.keys())
     if (match.unmatched) {
       report.unmatched.push({
@@ -167,7 +200,7 @@ for (const row of rows) {
 
 // Photos are matched per brand, since the flat layout keeps every car of a
 // brand in one folder and needs the brand's full slug list to disambiguate.
-const report = { matched: [], unmatched: [] }
+const report = { matched: [], unmatched: [], badExtension: [] }
 for (const [id, cars] of carsByBrand) {
   const found = scanBrandImages(id, cars.map(c => c.id.split('/')[1]), report)
   for (const car of cars) car.images = found.get(car.id.split('/')[1]) || []
@@ -188,6 +221,15 @@ if (report.matched.length) {
   for (const m of report.matched) console.log(`  ${m.brandId}/${m.file} → ${m.slug} (${m.how})`)
 }
 const renameTo = u => (u.suggestion ? `${u.suggestion}${path.extname(u.file)}` : null)
+// A file whose name ends in something like ".4" or ".3" — the tail of the
+// model name — needs its real extension put back before it can be used.
+const fixedName = b => `${b.file}.${b.ext}`
+if (report.badExtension.length) {
+  console.warn(`\nImage files with no usable extension (${report.badExtension.length}) — these are ignored:`)
+  for (const b of report.badExtension) {
+    console.warn(`  public/images/${b.brandId}/${b.file} is a ${b.ext.toUpperCase()} — rename it to "${fixedName(b)}".`)
+  }
+}
 if (report.unmatched.length) {
   console.warn(`\nPhotos not matched to a car (${report.unmatched.length}) — these are skipped:`)
   for (const u of report.unmatched) {
@@ -199,6 +241,9 @@ if (report.unmatched.length) {
 // In GitHub Actions, surface unmatched photos where they can't be missed:
 // as annotations on the run, and as a table on the run's summary page.
 if (process.env.GITHUB_ACTIONS) {
+  for (const b of report.badExtension) {
+    console.log(`::warning file=public/images/${b.brandId}/${b.file}::This is a ${b.ext.toUpperCase()} image with no file extension, so it was ignored. Rename it to "${fixedName(b)}".`)
+  }
   for (const u of report.unmatched) {
     const fix = renameTo(u)
       ? `Closest car: ${u.suggestion}. Rename the file to "${renameTo(u)}" if that's the one.`
@@ -217,6 +262,15 @@ if (process.env.GITHUB_STEP_SUMMARY) {
   const md = [`## Car database\n`,
     `**${totalCars} cars · ${totalPhotos} photos · ${withPhotos} cars have a photo**\n`]
 
+  if (report.badExtension.length) {
+    md.push(`### ⚠️ ${report.badExtension.length} image(s) ignored — missing a file extension\n`)
+    md.push('| File | Actually a | Rename to |', '| --- | --- | --- |')
+    for (const b of report.badExtension) {
+      md.push(`| \`${b.file}\` (${b.brandId}) | ${b.ext.toUpperCase()} | \`${fixedName(b)}\` |`)
+    }
+    md.push('')
+  }
+
   if (report.unmatched.length) {
     md.push(`### ⚠️ ${report.unmatched.length} photo(s) skipped — not matched to a car\n`)
     md.push('| Photo | Closest car | What to do |', '| --- | --- | --- |')
@@ -228,7 +282,7 @@ if (process.env.GITHUB_STEP_SUMMARY) {
       } |`)
     }
     md.push('')
-  } else {
+  } else if (!report.badExtension.length) {
     md.push(`### ✅ Every photo matched a car\n`)
   }
 
