@@ -15,7 +15,20 @@ export const norm = s => String(s).toLowerCase()
   .replace(/[^a-z0-9]+/g, '-')
   .replace(/^-+|-+$/g, '')
 
-const tokens = s => norm(s).split('-').filter(Boolean)
+const ROMAN = { i: '1', ii: '2', iii: '3', iv: '4', v: '5', vi: '6', vii: '7', viii: '8' }
+
+// Splits a name into comparable words. Letter/digit boundaries are split so
+// "675LT" lines up with "675-lt", and roman numerals become digits so
+// "gt40-mk1" lines up with "GT40 Mk I".
+const tokens = s => norm(s)
+  .replace(/(^|-)(mk|mark)([ivx]+)(?=-|$)/g, '$1$2-$3')   // mkII → mk ii
+  .replace(/([a-z])(\d)/g, '$1-$2')
+  .replace(/(\d)([a-z])/g, '$1-$2')
+  .split('-')
+  .filter(Boolean)
+  .map(t => ROMAN[t] ?? t)
+
+const compact = s => norm(s).replace(/-/g, '')
 const digitRuns = s => String(s).match(/\d+/g) || []
 
 // Model numbers carry the whole meaning in car naming — an F40 is not an F50,
@@ -27,7 +40,7 @@ function digitsAgree(candidate, fileName) {
 }
 
 function bigrams(s) {
-  const t = s.replace(/-/g, '')
+  const t = compact(s)
   const out = new Map()
   for (let i = 0; i < t.length - 1; i++) {
     const k = t.slice(i, i + 2)
@@ -47,25 +60,32 @@ function dice(a, b) {
   return total ? (2 * shared) / total : 0
 }
 
-// Balances "the car's whole name appears in the filename" against "the
-// filename is mostly about this car", so a longer, more specific car name
-// beats a short one that merely happens to be included.
-function tokenF1(fileText, slug) {
+// Weighted towards recall: a car name that explains every word of the
+// filename beats one that leaves a word unaccounted for. That is what picks
+// "huayra-r-evo-roadster" over "huayra-roadster" for "huayra_evo_roadster" —
+// the latter has no answer for "evo".
+function tokenScore(fileText, slug) {
   const F = new Set(tokens(fileText)), S = new Set(tokens(slug))
   if (!F.size || !S.size) return 0
   const shared = [...S].filter(t => F.has(t)).length
   if (!shared) return 0
   const precision = shared / S.size   // how much of the car name is present
   const recall = shared / F.size      // how much of the filename it explains
-  return (2 * precision * recall) / (precision + recall)
+  return (5 * precision * recall) / (4 * precision + recall)
 }
 
 // Word overlap alone misreads "zonda-revolucion" as the Zonda R, and spelling
 // similarity alone misreads model numbers; together they agree far more often.
-const score = (a, b) => 0.5 * dice(a, b) + 0.5 * tokenF1(a, b)
+// A name that the car's name begins with ("gt" → "gt-gts") gets a nudge, which
+// settles ties against cars that merely contain the word ("570gt").
+function score(fileText, slug) {
+  const prefix = compact(slug).startsWith(compact(fileText)) ? 0.05 : 0
+  return 0.5 * dice(fileText, slug) + 0.5 * tokenScore(fileText, slug) + prefix
+}
 
-const ACCEPT = 0.45   // minimum similarity for a fuzzy match
-const MARGIN = 0.08   // how far ahead of the runner-up the winner must be
+const ACCEPT = 0.45     // minimum combined similarity for a match
+const MARGIN = 0.08     // how far ahead of the runner-up the winner must be
+const SPELLING = 0.80   // near-identical spelling is conclusive by itself
 
 // Returns { slug, order, how } or null. `order` positions multiple photos of
 // the same car (a trailing "-2" means the second photo).
@@ -74,14 +94,17 @@ export function matchPhotoToCar(base, brandId, slugs) {
   const n = norm(base)
 
   // Candidate readings of the filename: as-is, without a trailing index, and
-  // with a repeated brand name ("koenigsegg-…") removed.
+  // with the brand name dropped — it carries no signal and appears anywhere
+  // in the name ("2005-ford-gt", "koenigsegg_regera").
+  const brandWords = new Set(brandId.split('-'))
   const readings = []
   const addReading = (text, order) => {
     if (!text || readings.some(r => r[0] === text && r[1] === order)) return
     readings.push([text, order])
     const m = /^(.*)-(\d+)$/.exec(text)
     if (m) readings.push([m[1], Number(m[2])])
-    if (text.startsWith(`${brandId}-`)) addReading(text.slice(brandId.length + 1), order)
+    const withoutBrand = text.split('-').filter(w => !brandWords.has(w)).join('-')
+    if (withoutBrand !== text) addReading(withoutBrand, order)
   }
   addReading(n, 1)
 
@@ -98,7 +121,7 @@ export function matchPhotoToCar(base, brandId, slugs) {
   for (const [text, order] of readings) {
     for (const slug of all) {
       if (!digitsAgree(slug, text)) continue
-      ranked.push({ slug, order, value: score(text, slug) })
+      ranked.push({ slug, order, value: score(text, slug), spelling: dice(text, slug) })
     }
   }
   ranked.sort((a, b) => b.value - a.value)
@@ -106,6 +129,14 @@ export function matchPhotoToCar(base, brandId, slugs) {
   const runnerUp = ranked.find(r => r.slug !== best?.slug)?.value ?? 0
   if (best && best.value >= ACCEPT && best.value - runnerUp >= MARGIN) {
     return { slug: best.slug, order: best.order, how: `matched ${best.value.toFixed(2)}` }
+  }
+  // A near-identical spelling is conclusive on its own — it catches simple
+  // misspellings ("tourbillion" → Tourbillon) that share no whole word.
+  const bySpelling = [...ranked].sort((a, b) => b.spelling - a.spelling)
+  const top = bySpelling[0]
+  const next = bySpelling.find(r => r.slug !== top?.slug)?.spelling ?? 0
+  if (top && top.spelling >= SPELLING && top.spelling - next >= MARGIN) {
+    return { slug: top.slug, order: top.order, how: `spelling ${top.spelling.toFixed(2)}` }
   }
   return {
     unmatched: true,
