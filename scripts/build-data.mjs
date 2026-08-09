@@ -32,7 +32,7 @@ const readJSON = p => (fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8'))
 // The flat layout means every car in a brand lives in ONE folder, so a whole
 // brand's photos can be uploaded in a single drag-and-drop.
 // Returns, per car slug, [{ file: <path relative to the brand folder>, credit }].
-function scanBrandImages(brandId, slugs, matched) {
+function scanBrandImages(brandId, slugs, report) {
   const brandDir = path.join(IMG_DIR, brandId)
   const found = new Map(slugs.map(s => [s, []]))
   if (!fs.existsSync(brandDir)) return found
@@ -57,12 +57,19 @@ function scanBrandImages(brandId, slugs, matched) {
     if (!IMG_EXT.test(entry.name)) continue
     const match = matchPhotoToCar(entry.name.replace(IMG_EXT, ''), brandId, found.keys())
     if (match.unmatched) {
-      const hint = match.suggestion ? ` Closest car: "${match.suggestion}" — rename it that if correct.` : ''
-      console.warn(`WARNING: images/${brandId}/${entry.name} doesn't match any car — skipped.${hint}`)
+      report.unmatched.push({
+        path: `public/images/${brandId}/${entry.name}`,
+        brandId,
+        file: entry.name,
+        suggestion: match.suggestion,
+        ambiguous: match.ambiguous,
+      })
       continue
     }
     const { slug, order } = match
-    if (match.how !== 'exact') matched.push(`${entry.name} → ${slug} (${match.how})`)
+    if (match.how !== 'exact') {
+      report.matched.push({ brandId, file: entry.name, slug, how: match.how })
+    }
     found.get(slug).push({
       file: entry.name,
       credit: brandCredits[entry.name] || '',
@@ -160,9 +167,9 @@ for (const row of rows) {
 
 // Photos are matched per brand, since the flat layout keeps every car of a
 // brand in one folder and needs the brand's full slug list to disambiguate.
-const matched = []
+const report = { matched: [], unmatched: [] }
 for (const [id, cars] of carsByBrand) {
-  const found = scanBrandImages(id, cars.map(c => c.id.split('/')[1]), matched)
+  const found = scanBrandImages(id, cars.map(c => c.id.split('/')[1]), report)
   for (const car of cars) car.images = found.get(car.id.split('/')[1]) || []
 }
 
@@ -176,7 +183,59 @@ for (const m of unknown) {
 }
 // Show every photo that needed more than an exact name, so a wrong guess is
 // visible rather than silent.
-if (matched.length) {
-  console.log(`\nPhotos matched by name (${matched.length}):`)
-  for (const m of matched) console.log(`  ${m}`)
+if (report.matched.length) {
+  console.log(`\nPhotos matched by name (${report.matched.length}):`)
+  for (const m of report.matched) console.log(`  ${m.brandId}/${m.file} → ${m.slug} (${m.how})`)
+}
+const renameTo = u => (u.suggestion ? `${u.suggestion}${path.extname(u.file)}` : null)
+if (report.unmatched.length) {
+  console.warn(`\nPhotos not matched to a car (${report.unmatched.length}) — these are skipped:`)
+  for (const u of report.unmatched) {
+    const fix = renameTo(u) ? ` Rename to "${renameTo(u)}" if that's the one.` : ''
+    console.warn(`  ${u.path}${fix}`)
+  }
+}
+
+// In GitHub Actions, surface unmatched photos where they can't be missed:
+// as annotations on the run, and as a table on the run's summary page.
+if (process.env.GITHUB_ACTIONS) {
+  for (const u of report.unmatched) {
+    const fix = renameTo(u)
+      ? `Closest car: ${u.suggestion}. Rename the file to "${renameTo(u)}" if that's the one.`
+      : 'No similar car name found — check the spelling and the brand folder.'
+    const why = u.ambiguous ? 'matches more than one car equally well' : "doesn't match any car"
+    console.log(`::warning file=${u.path}::Photo ${why}, so it was skipped. ${fix}`)
+  }
+}
+if (process.env.GITHUB_STEP_SUMMARY) {
+  const totalPhotos = [...carsByBrand.values()]
+    .reduce((n, cars) => n + cars.reduce((m, c) => m + c.images.length, 0), 0)
+  const totalCars = [...carsByBrand.values()].reduce((n, cars) => n + cars.length, 0)
+  const withPhotos = [...carsByBrand.values()]
+    .reduce((n, cars) => n + cars.filter(c => c.images.length).length, 0)
+
+  const md = [`## Car database\n`,
+    `**${totalCars} cars · ${totalPhotos} photos · ${withPhotos} cars have a photo**\n`]
+
+  if (report.unmatched.length) {
+    md.push(`### ⚠️ ${report.unmatched.length} photo(s) skipped — not matched to a car\n`)
+    md.push('| Photo | Closest car | What to do |', '| --- | --- | --- |')
+    for (const u of report.unmatched) {
+      md.push(`| \`${u.file}\` (${u.brandId}) | ${u.suggestion ? `\`${u.suggestion}\`` : '—'} | ${
+        renameTo(u)
+          ? `Rename to \`${renameTo(u)}\`${u.ambiguous ? ' (the name fits more than one car)' : ''}`
+          : 'Check the spelling, and that it is in the right brand folder'
+      } |`)
+    }
+    md.push('')
+  } else {
+    md.push(`### ✅ Every photo matched a car\n`)
+  }
+
+  if (report.matched.length) {
+    md.push(`<details><summary>${report.matched.length} photo(s) matched by name, not an exact filename</summary>\n`)
+    for (const m of report.matched) md.push(`- \`${m.file}\` → **${m.slug}** (${m.brandId})`)
+    md.push('\n</details>')
+  }
+  fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, md.join('\n') + '\n')
 }
