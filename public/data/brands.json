@@ -1,36 +1,6 @@
 {
   "brands": [
     {
-      "id": "pagani",
-      "name": "Pagani",
-      "country": "Italy",
-      "founded": 1992,
-      "tagline": "Art and science — San Cesario sul Panaro",
-      "data": "data/pagani.json",
-      "hero": {
-        "kicker": "HYPERCAR ARCHIVE · SAN CESARIO SUL PANARO",
-        "titlePrefix": "La Collezione",
-        "titleAccent": "Pagani",
-        "sub": "Every production model, limited edition, and significant one-off — 1999 to today. Open a card for the full build plaque, story, engineering, and photo gallery."
-      },
-      "theme": {
-        "accent": "#c6a15b",
-        "familyAccents": {
-          "Zonda": "#c6a15b",
-          "Huayra": "#7fa3c4",
-          "Utopia": "#8fae8b"
-        },
-        "background": "#131417",
-        "panel": "#1b1d22",
-        "ivory": "#ece5d8",
-        "displayFont": "'Marcellus', 'Times New Roman', serif",
-        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
-        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
-        "texture": "carbon-weave",
-        "motif": "quad-exhaust"
-      }
-    },
-    {
       "id": "ferrari",
       "name": "Ferrari",
       "country": "Italy",
@@ -91,34 +61,121 @@
       }
     },
     {
-      "id": "mclaren",
-      "name": "McLaren",
+      "id": "aston-martin",
+      "name": "Aston Martin",
       "country": "United Kingdom",
-      "founded": 1985,
-      "tagline": "Racing DNA from Woking — papaya orange since Bruce",
-      "data": "data/mclaren.json",
+      "founded": 1913,
+      "tagline": "Power, beauty, soul — Gaydon",
+      "data": "data/aston-martin.json",
       "hero": {
-        "kicker": "TECHNICAL ARCHIVE · WOKING, SURREY",
-        "titlePrefix": "The Science of",
-        "titleAccent": "McLaren",
-        "sub": "From the F1 — still the fastest naturally aspirated car ever — to the Senna, Speedtail, and W1. Carbon tubs and lap times over theater."
+        "kicker": "GRAND TOURER ARCHIVE · GAYDON, WARWICKSHIRE",
+        "titlePrefix": "The Art of",
+        "titleAccent": "Aston Martin",
+        "sub": "From the DB2 to the Valkyrie — noble grand tourers, Bond's company cars, and the odd Le Mans-grade monster."
       },
       "theme": {
-        "accent": "#ff8730",
+        "accent": "#7dae92",
         "familyAccents": {
-          "F1": "#ff8730",
-          "P1": "#5bb8c4",
-          "Senna": "#c4d64f",
-          "Speedtail": "#8fa3c4"
+          "DB": "#7dae92",
+          "V8": "#c9a15b",
+          "V12": "#b8825b",
+          "Vanquish": "#8f9fb8",
+          "Vantage": "#a8c0a0",
+          "Valkyrie": "#d05f5f"
         },
+        "background": "#101413",
+        "panel": "#171d1a",
+        "ivory": "#e9ede8",
+        "displayFont": "'Cormorant Garamond', 'Georgia', serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave"
+      }
+    },
+    {
+      "id": "porsche",
+      "name": "Porsche",
+      "country": "Germany",
+      "founded": 1931,
+      "tagline": "Intelligent performance — Zuffenhausen",
+      "data": "data/porsche.json",
+      "hero": {
+        "kicker": "MOTORSPORT ARCHIVE · ZUFFENHAUSEN & WEISSACH",
+        "titlePrefix": "The Icons of",
+        "titleAccent": "Porsche",
+        "sub": "From the 356 to the 917, 959, and 918 Spyder — Stuttgart's racing bloodline, one icon per era."
+      },
+      "theme": {
+        "accent": "#cfd4da",
+        "familyAccents": {},
         "background": "#101214",
-        "panel": "#171a1e",
-        "ivory": "#ebeced",
-        "displayFont": "'Titillium Web', 'Arial', sans-serif",
+        "panel": "#171a1d",
+        "ivory": "#eceef0",
+        "displayFont": "'Archivo', 'Arial', sans-serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave"
+      }
+    },
+    {
+      "id": "pagani",
+      "name": "Pagani",
+      "country": "Italy",
+      "founded": 1992,
+      "tagline": "Art and science — San Cesario sul Panaro",
+      "data": "data/pagani.json",
+      "hero": {
+        "kicker": "HYPERCAR ARCHIVE · SAN CESARIO SUL PANARO",
+        "titlePrefix": "La Collezione",
+        "titleAccent": "Pagani",
+        "sub": "Every production model, limited edition, and significant one-off — 1999 to today. Open a card for the full build plaque, story, engineering, and photo gallery."
+      },
+      "theme": {
+        "accent": "#c6a15b",
+        "familyAccents": {
+          "Zonda": "#c6a15b",
+          "Huayra": "#7fa3c4",
+          "Utopia": "#8fae8b"
+        },
+        "background": "#131417",
+        "panel": "#1b1d22",
+        "ivory": "#ece5d8",
+        "displayFont": "'Marcellus', 'Times New Roman', serif",
         "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
         "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
         "texture": "carbon-weave",
-        "motif": "speedmark"
+        "motif": "quad-exhaust"
+      }
+    },
+    {
+      "id": "maserati",
+      "name": "Maserati",
+      "country": "Italy",
+      "founded": 1914,
+      "tagline": "Il tridente — racing royalty of Modena",
+      "data": "data/maserati.json",
+      "hero": {
+        "kicker": "GRAN TURISMO ARCHIVE · VIA CIRO MENOTTI, MODENA",
+        "titlePrefix": "Il Tridente",
+        "titleAccent": "Maserati",
+        "sub": "Grand prix champions turned grand tourers — from the 250F and Birdcage to the MC12 and MC20."
+      },
+      "theme": {
+        "accent": "#5e87c9",
+        "familyAccents": {
+          "Quattroporte": "#8fa8d0",
+          "Ghibli": "#c9a15b",
+          "GranTurismo": "#7fb0c4",
+          "MC": "#d05f5f",
+          "Biturbo": "#a89a8a"
+        },
+        "background": "#0f1218",
+        "panel": "#161a22",
+        "ivory": "#e9ecf2",
+        "displayFont": "'Bodoni Moda', 'Didot', serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave"
       }
     },
     {
@@ -185,88 +242,95 @@
       }
     },
     {
-      "id": "aston-martin",
-      "name": "Aston Martin",
+      "id": "mclaren",
+      "name": "McLaren",
       "country": "United Kingdom",
-      "founded": 1913,
-      "tagline": "Power, beauty, soul — Gaydon",
-      "data": "data/aston-martin.json",
+      "founded": 1985,
+      "tagline": "Racing DNA from Woking — papaya orange since Bruce",
+      "data": "data/mclaren.json",
       "hero": {
-        "kicker": "GRAND TOURER ARCHIVE · GAYDON, WARWICKSHIRE",
-        "titlePrefix": "The Art of",
-        "titleAccent": "Aston Martin",
-        "sub": "From the DB2 to the Valkyrie — noble grand tourers, Bond's company cars, and the odd Le Mans-grade monster."
+        "kicker": "TECHNICAL ARCHIVE · WOKING, SURREY",
+        "titlePrefix": "The Science of",
+        "titleAccent": "McLaren",
+        "sub": "From the F1 — still the fastest naturally aspirated car ever — to the Senna, Speedtail, and W1. Carbon tubs and lap times over theater."
       },
       "theme": {
-        "accent": "#7dae92",
+        "accent": "#ff8730",
         "familyAccents": {
-          "DB": "#7dae92",
-          "V8": "#c9a15b",
-          "V12": "#b8825b",
-          "Vanquish": "#8f9fb8",
-          "Vantage": "#a8c0a0",
-          "Valkyrie": "#d05f5f"
+          "F1": "#ff8730",
+          "P1": "#5bb8c4",
+          "Senna": "#c4d64f",
+          "Speedtail": "#8fa3c4"
         },
-        "background": "#101413",
-        "panel": "#171d1a",
-        "ivory": "#e9ede8",
-        "displayFont": "'Cormorant Garamond', 'Georgia', serif",
-        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
-        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
-        "texture": "carbon-weave"
-      }
-    },
-    {
-      "id": "maserati",
-      "name": "Maserati",
-      "country": "Italy",
-      "founded": 1914,
-      "tagline": "Il tridente — racing royalty of Modena",
-      "data": "data/maserati.json",
-      "hero": {
-        "kicker": "GRAN TURISMO ARCHIVE · VIA CIRO MENOTTI, MODENA",
-        "titlePrefix": "Il Tridente",
-        "titleAccent": "Maserati",
-        "sub": "Grand prix champions turned grand tourers — from the 250F and Birdcage to the MC12 and MC20."
-      },
-      "theme": {
-        "accent": "#5e87c9",
-        "familyAccents": {
-          "Quattroporte": "#8fa8d0",
-          "Ghibli": "#c9a15b",
-          "GranTurismo": "#7fb0c4",
-          "MC": "#d05f5f",
-          "Biturbo": "#a89a8a"
-        },
-        "background": "#0f1218",
-        "panel": "#161a22",
-        "ivory": "#e9ecf2",
-        "displayFont": "'Bodoni Moda', 'Didot', serif",
-        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
-        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
-        "texture": "carbon-weave"
-      }
-    },
-    {
-      "id": "porsche",
-      "name": "Porsche",
-      "country": "Germany",
-      "founded": 1931,
-      "tagline": "Intelligent performance — Zuffenhausen",
-      "data": "data/porsche.json",
-      "hero": {
-        "kicker": "MOTORSPORT ARCHIVE · ZUFFENHAUSEN & WEISSACH",
-        "titlePrefix": "The Icons of",
-        "titleAccent": "Porsche",
-        "sub": "From the 356 to the 917, 959, and 918 Spyder — Stuttgart's racing bloodline, one icon per era."
-      },
-      "theme": {
-        "accent": "#cfd4da",
-        "familyAccents": {},
         "background": "#101214",
-        "panel": "#171a1d",
-        "ivory": "#eceef0",
-        "displayFont": "'Archivo', 'Arial', sans-serif",
+        "panel": "#171a1e",
+        "ivory": "#ebeced",
+        "displayFont": "'Titillium Web', 'Arial', sans-serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave",
+        "motif": "speedmark"
+      }
+    },
+    {
+      "id": "lotus",
+      "name": "Lotus",
+      "country": "United Kingdom",
+      "founded": 1948,
+      "tagline": "Simplify, then add lightness — Hethel, Norfolk",
+      "data": "data/lotus.json",
+      "hero": {
+        "kicker": "LIGHTWEIGHT DOCTRINE · HETHEL, NORFOLK",
+        "titlePrefix": "Add",
+        "titleAccent": "Lightness",
+        "sub": "Colin Chapman's one idea, pursued for seventy years: take everything out, then take out more. From the Seven to the electric Evija."
+      },
+      "theme": {
+        "accent": "#e0c93a",
+        "familyAccents": {
+          "Seven": "#d8d4c4",
+          "Elan": "#c98a5b",
+          "Europa": "#9fb8d0",
+          "Esprit": "#8fa8c9",
+          "Elise": "#e0c93a",
+          "Exige": "#c4d64f",
+          "Evora": "#7fb08f",
+          "Emira": "#8fae5b",
+          "Evija": "#5fc4bb",
+          "Eletre": "#a0b8c4"
+        },
+        "background": "#0f1310",
+        "panel": "#161d17",
+        "ivory": "#eaefe6",
+        "displayFont": "'Titillium Web', 'Arial', sans-serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave"
+      }
+    },
+    {
+      "id": "dodge",
+      "name": "Dodge",
+      "country": "United States",
+      "founded": 1900,
+      "tagline": "Brute force from Auburn Hills",
+      "data": "data/dodge.json",
+      "hero": {
+        "kicker": "AMERICAN BRUTE FORCE · AUBURN HILLS, MICHIGAN",
+        "titlePrefix": "No Replacement for",
+        "titleAccent": "Displacement",
+        "sub": "The Viper — 8 litres, ten cylinders, no driver aids for a decade — and the drag-strip Demons that followed."
+      },
+      "theme": {
+        "accent": "#cf3030",
+        "familyAccents": {
+          "Viper": "#cf3030",
+          "Challenger": "#9a72c9"
+        },
+        "background": "#131011",
+        "panel": "#1b1617",
+        "ivory": "#efe6e2",
+        "displayFont": "'Oswald', 'Arial Narrow', sans-serif",
         "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
         "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
         "texture": "carbon-weave"
@@ -327,25 +391,56 @@
       }
     },
     {
-      "id": "gma",
-      "name": "Gordon Murray Automotive",
-      "country": "United Kingdom",
-      "founded": 2017,
-      "tagline": "The analogue supercar, perfected — Windlesham",
-      "data": "data/gma.json",
+      "id": "nissan",
+      "name": "Nissan",
+      "country": "Japan",
+      "founded": 1933,
+      "tagline": "Godzilla — the Skyline GT-R bloodline",
+      "data": "data/nissan.json",
       "hero": {
-        "kicker": "ANALOGUE SUPERCAR ARCHIVE · WINDLESHAM, SURREY",
-        "titlePrefix": "The Obsessions of",
-        "titleAccent": "Gordon Murray",
-        "sub": "T.50, T.33 — the McLaren F1 designer returns with fan-assisted downforce, V12s past 12,000 rpm, and gram-counting mania."
+        "kicker": "GT-R BLOODLINE · YOKOHAMA & TOCHIGI",
+        "titlePrefix": "The Rise of",
+        "titleAccent": "Godzilla",
+        "sub": "From the Hakosuka's 50 straight touring-car wins to the R35 that embarrassed cars costing four times as much."
       },
       "theme": {
-        "accent": "#74c0c4",
-        "familyAccents": {},
-        "background": "#121316",
-        "panel": "#1a1c20",
-        "ivory": "#eae7e0",
-        "displayFont": "'Titillium Web', 'Arial', sans-serif",
+        "accent": "#3f83d8",
+        "familyAccents": {
+          "Skyline": "#3f83d8",
+          "GT-R": "#d0454a"
+        },
+        "background": "#0f1218",
+        "panel": "#161b23",
+        "ivory": "#e8edf4",
+        "displayFont": "'Rajdhani', 'Arial Narrow', sans-serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave"
+      }
+    },
+    {
+      "id": "chevrolet",
+      "name": "Chevrolet",
+      "country": "United States",
+      "founded": 1911,
+      "tagline": "America's sports car — Bowling Green, Kentucky",
+      "data": "data/chevrolet.json",
+      "hero": {
+        "kicker": "SMALL-BLOCK ARCHIVE · BOWLING GREEN, KENTUCKY",
+        "titlePrefix": "America's",
+        "titleAccent": "Sports Car",
+        "sub": "Seventy years of Corvette, from the six-cylinder C1 to the flat-plane-crank C8 Z06 — plus the Camaros that fought the Mustang."
+      },
+      "theme": {
+        "accent": "#d33a3a",
+        "familyAccents": {
+          "Corvette": "#d33a3a",
+          "Camaro": "#e8b53d"
+        },
+        "background": "#111214",
+        "panel": "#191b1e",
+        "ivory": "#eceae6",
+        "displayFont": "'Oswald', 'Arial Narrow', sans-serif",
         "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
         "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
         "texture": "carbon-weave"
@@ -402,25 +497,25 @@
       }
     },
     {
-      "id": "ssc",
-      "name": "SSC North America",
-      "country": "United States",
-      "founded": 1998,
-      "tagline": "Speed records from the Pacific Northwest",
-      "data": "data/ssc.json",
+      "id": "gma",
+      "name": "Gordon Murray Automotive",
+      "country": "United Kingdom",
+      "founded": 2017,
+      "tagline": "The analogue supercar, perfected — Windlesham",
+      "data": "data/gma.json",
       "hero": {
-        "kicker": "SPEED RECORD ARCHIVE · RICHLAND, WASHINGTON",
-        "titlePrefix": "Chasing Records:",
-        "titleAccent": "SSC",
-        "sub": "Ultimate Aero to Tuatara — one obsession, the production-car speed record, pursued across two decades."
+        "kicker": "ANALOGUE SUPERCAR ARCHIVE · WINDLESHAM, SURREY",
+        "titlePrefix": "The Obsessions of",
+        "titleAccent": "Gordon Murray",
+        "sub": "T.50, T.33 — the McLaren F1 designer returns with fan-assisted downforce, V12s past 12,000 rpm, and gram-counting mania."
       },
       "theme": {
-        "accent": "#cf4a3f",
+        "accent": "#74c0c4",
         "familyAccents": {},
         "background": "#121316",
         "panel": "#1a1c20",
         "ivory": "#eae7e0",
-        "displayFont": "'Oswald', 'Arial Narrow', sans-serif",
+        "displayFont": "'Titillium Web', 'Arial', sans-serif",
         "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
         "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
         "texture": "carbon-weave"
@@ -452,100 +547,50 @@
       }
     },
     {
-      "id": "italdesign",
-      "name": "Italdesign",
-      "country": "Italy",
-      "founded": 1968,
-      "tagline": "Giugiaro’s house of ideas — Moncalieri",
-      "data": "data/italdesign.json",
-      "hero": {
-        "kicker": "CONCEPT ATELIER · MONCALIERI, TURIN",
-        "titlePrefix": "Disegno di",
-        "titleAccent": "Italdesign",
-        "sub": "The design house behind a hundred icons, occasionally building its own — limited-run specials from Turin."
-      },
-      "theme": {
-        "accent": "#9fb4d8",
-        "familyAccents": {},
-        "background": "#121316",
-        "panel": "#1a1c20",
-        "ivory": "#eae7e0",
-        "displayFont": "'Marcellus', 'Times New Roman', serif",
-        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
-        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
-        "texture": "carbon-weave"
-      }
-    },
-    {
-      "id": "rimac",
-      "name": "Rimac",
-      "country": "Croatia",
-      "founded": 2009,
-      "tagline": "Electric hypercars from a garage in Zagreb",
-      "data": "data/rimac.json",
-      "hero": {
-        "kicker": "ELECTRIC HYPERCAR ARCHIVE · SVETA NEDELJA, ZAGREB",
-        "titlePrefix": "The Voltage of",
-        "titleAccent": "Rimac",
-        "sub": "From a converted BMW in a garage to the Nevera — Mate Rimac rewrote what electric performance means."
-      },
-      "theme": {
-        "accent": "#4fc4b8",
-        "familyAccents": {},
-        "background": "#121316",
-        "panel": "#1a1c20",
-        "ivory": "#eae7e0",
-        "displayFont": "'Michroma', 'Arial Narrow', sans-serif",
-        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
-        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
-        "texture": "carbon-weave"
-      }
-    },
-    {
-      "id": "hennessey",
-      "name": "Hennessey",
+      "id": "singer",
+      "name": "Singer",
       "country": "United States",
-      "founded": 1991,
-      "tagline": "Venom from Sealy, Texas",
-      "data": "data/hennessey.json",
+      "founded": 2009,
+      "tagline": "Everything is important — Porsche 911s, reimagined",
+      "data": "data/singer.json",
       "hero": {
-        "kicker": "TEXAS TUNER ARCHIVE · SEALY, TEXAS",
-        "titlePrefix": "Venom by",
-        "titleAccent": "Hennessey",
-        "sub": "Twin-turbo Texas horsepower — the Venom GT and F5 chase 300 mph the American way: more boost."
+        "kicker": "REIMAGINED BY SINGER · LOS ANGELES, CALIFORNIA",
+        "titlePrefix": "Everything Is",
+        "titleAccent": "Important",
+        "sub": "Air-cooled 911s taken apart and rebuilt to a standard nobody asked for, by a company that insists it restores rather than builds."
       },
       "theme": {
-        "accent": "#e0e35c",
+        "accent": "#d9a05b",
+        "familyAccents": {},
+        "background": "#14120f",
+        "panel": "#1c1915",
+        "ivory": "#f0e8db",
+        "displayFont": "'Cormorant Garamond', 'Georgia', serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave"
+      }
+    },
+    {
+      "id": "ssc",
+      "name": "SSC North America",
+      "country": "United States",
+      "founded": 1998,
+      "tagline": "Speed records from the Pacific Northwest",
+      "data": "data/ssc.json",
+      "hero": {
+        "kicker": "SPEED RECORD ARCHIVE · RICHLAND, WASHINGTON",
+        "titlePrefix": "Chasing Records:",
+        "titleAccent": "SSC",
+        "sub": "Ultimate Aero to Tuatara — one obsession, the production-car speed record, pursued across two decades."
+      },
+      "theme": {
+        "accent": "#cf4a3f",
         "familyAccents": {},
         "background": "#121316",
         "panel": "#1a1c20",
         "ivory": "#eae7e0",
         "displayFont": "'Oswald', 'Arial Narrow', sans-serif",
-        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
-        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
-        "texture": "carbon-weave"
-      }
-    },
-    {
-      "id": "zenvo",
-      "name": "Zenvo",
-      "country": "Denmark",
-      "founded": 2007,
-      "tagline": "Danish fury, hand-built in Præstø",
-      "data": "data/zenvo.json",
-      "hero": {
-        "kicker": "DANISH HYPERCAR ARCHIVE · PRÆSTØ, ZEALAND",
-        "titlePrefix": "Nordic Fury:",
-        "titleAccent": "Zenvo",
-        "sub": "Denmark’s only hypercar maker — centrifugal superchargers, active wings, and the 1,850 hp Aurora V12."
-      },
-      "theme": {
-        "accent": "#d0556f",
-        "familyAccents": {},
-        "background": "#121316",
-        "panel": "#1a1c20",
-        "ivory": "#eae7e0",
-        "displayFont": "'Exo 2', 'Arial', sans-serif",
         "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
         "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
         "texture": "carbon-weave"
@@ -577,6 +622,56 @@
       }
     },
     {
+      "id": "hennessey",
+      "name": "Hennessey",
+      "country": "United States",
+      "founded": 1991,
+      "tagline": "Venom from Sealy, Texas",
+      "data": "data/hennessey.json",
+      "hero": {
+        "kicker": "TEXAS TUNER ARCHIVE · SEALY, TEXAS",
+        "titlePrefix": "Venom by",
+        "titleAccent": "Hennessey",
+        "sub": "Twin-turbo Texas horsepower — the Venom GT and F5 chase 300 mph the American way: more boost."
+      },
+      "theme": {
+        "accent": "#e0e35c",
+        "familyAccents": {},
+        "background": "#121316",
+        "panel": "#1a1c20",
+        "ivory": "#eae7e0",
+        "displayFont": "'Oswald', 'Arial Narrow', sans-serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave"
+      }
+    },
+    {
+      "id": "italdesign",
+      "name": "Italdesign",
+      "country": "Italy",
+      "founded": 1968,
+      "tagline": "Giugiaro’s house of ideas — Moncalieri",
+      "data": "data/italdesign.json",
+      "hero": {
+        "kicker": "CONCEPT ATELIER · MONCALIERI, TURIN",
+        "titlePrefix": "Disegno di",
+        "titleAccent": "Italdesign",
+        "sub": "The design house behind a hundred icons, occasionally building its own — limited-run specials from Turin."
+      },
+      "theme": {
+        "accent": "#9fb4d8",
+        "familyAccents": {},
+        "background": "#121316",
+        "panel": "#1a1c20",
+        "ivory": "#eae7e0",
+        "displayFont": "'Marcellus', 'Times New Roman', serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave"
+      }
+    },
+    {
       "id": "radical",
       "name": "Radical",
       "country": "United Kingdom",
@@ -596,6 +691,31 @@
         "panel": "#1a1c20",
         "ivory": "#eae7e0",
         "displayFont": "'Titillium Web', 'Arial', sans-serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave"
+      }
+    },
+    {
+      "id": "rimac",
+      "name": "Rimac",
+      "country": "Croatia",
+      "founded": 2009,
+      "tagline": "Electric hypercars from a garage in Zagreb",
+      "data": "data/rimac.json",
+      "hero": {
+        "kicker": "ELECTRIC HYPERCAR ARCHIVE · SVETA NEDELJA, ZAGREB",
+        "titlePrefix": "The Voltage of",
+        "titleAccent": "Rimac",
+        "sub": "From a converted BMW in a garage to the Nevera — Mate Rimac rewrote what electric performance means."
+      },
+      "theme": {
+        "accent": "#4fc4b8",
+        "familyAccents": {},
+        "background": "#121316",
+        "panel": "#1a1c20",
+        "ivory": "#eae7e0",
+        "displayFont": "'Michroma', 'Arial Narrow', sans-serif",
         "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
         "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
         "texture": "carbon-weave"
@@ -627,75 +747,25 @@
       }
     },
     {
-      "id": "pininfarina",
-      "name": "Automobili Pininfarina",
-      "country": "Italy",
-      "founded": 2018,
-      "tagline": "Battista’s heirs — Cambiano",
-      "data": "data/pininfarina.json",
+      "id": "zenvo",
+      "name": "Zenvo",
+      "country": "Denmark",
+      "founded": 2007,
+      "tagline": "Danish fury, hand-built in Præstø",
+      "data": "data/zenvo.json",
       "hero": {
-        "kicker": "ELETTRICO ATELIER · CAMBIANO, TURIN",
-        "titlePrefix": "Battista’s Heirs:",
-        "titleAccent": "Pininfarina",
-        "sub": "The design dynasty builds its own at last — the 1,900 hp electric Battista, named for the founder."
+        "kicker": "DANISH HYPERCAR ARCHIVE · PRÆSTØ, ZEALAND",
+        "titlePrefix": "Nordic Fury:",
+        "titleAccent": "Zenvo",
+        "sub": "Denmark’s only hypercar maker — centrifugal superchargers, active wings, and the 1,850 hp Aurora V12."
       },
       "theme": {
-        "accent": "#5b6fd8",
+        "accent": "#d0556f",
         "familyAccents": {},
         "background": "#121316",
         "panel": "#1a1c20",
         "ivory": "#eae7e0",
-        "displayFont": "'Bodoni Moda', 'Didot', serif",
-        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
-        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
-        "texture": "carbon-weave"
-      }
-    },
-    {
-      "id": "hispano-suiza",
-      "name": "Hispano Suiza",
-      "country": "Spain",
-      "founded": 1904,
-      "tagline": "The stork of Barcelona, reborn",
-      "data": "data/hispano-suiza.json",
-      "hero": {
-        "kicker": "LA BELLE ÉPOQUE ARCHIVE · BARCELONA",
-        "titlePrefix": "The Stork of",
-        "titleAccent": "Hispano Suiza",
-        "sub": "Pre-war aviation royalty returned as an electric grand tourer — the Carmen, named for the founder’s heiress."
-      },
-      "theme": {
-        "accent": "#d4c08a",
-        "familyAccents": {},
-        "background": "#121316",
-        "panel": "#1a1c20",
-        "ivory": "#eae7e0",
-        "displayFont": "'Poiret One', 'Futura', sans-serif",
-        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
-        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
-        "texture": "carbon-weave"
-      }
-    },
-    {
-      "id": "ascari",
-      "name": "Ascari",
-      "country": "United Kingdom",
-      "founded": 1995,
-      "tagline": "Named for a double world champion — Banbury",
-      "data": "data/ascari.json",
-      "hero": {
-        "kicker": "PRIVATEER ARCHIVE · BANBURY, OXFORDSHIRE",
-        "titlePrefix": "Named for a Champion:",
-        "titleAccent": "Ascari",
-        "sub": "A Dutch billionaire’s BMW-V8 specials honoring Alberto Ascari — capped by a resort with its own race track."
-      },
-      "theme": {
-        "accent": "#a3c46a",
-        "familyAccents": {},
-        "background": "#121316",
-        "panel": "#1a1c20",
-        "ivory": "#eae7e0",
-        "displayFont": "'Titillium Web', 'Arial', sans-serif",
+        "displayFont": "'Exo 2', 'Arial', sans-serif",
         "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
         "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
         "texture": "carbon-weave"
@@ -727,6 +797,56 @@
       }
     },
     {
+      "id": "ascari",
+      "name": "Ascari",
+      "country": "United Kingdom",
+      "founded": 1995,
+      "tagline": "Named for a double world champion — Banbury",
+      "data": "data/ascari.json",
+      "hero": {
+        "kicker": "PRIVATEER ARCHIVE · BANBURY, OXFORDSHIRE",
+        "titlePrefix": "Named for a Champion:",
+        "titleAccent": "Ascari",
+        "sub": "A Dutch billionaire’s BMW-V8 specials honoring Alberto Ascari — capped by a resort with its own race track."
+      },
+      "theme": {
+        "accent": "#a3c46a",
+        "familyAccents": {},
+        "background": "#121316",
+        "panel": "#1a1c20",
+        "ivory": "#eae7e0",
+        "displayFont": "'Titillium Web', 'Arial', sans-serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave"
+      }
+    },
+    {
+      "id": "pininfarina",
+      "name": "Automobili Pininfarina",
+      "country": "Italy",
+      "founded": 2018,
+      "tagline": "Battista’s heirs — Cambiano",
+      "data": "data/pininfarina.json",
+      "hero": {
+        "kicker": "ELETTRICO ATELIER · CAMBIANO, TURIN",
+        "titlePrefix": "Battista’s Heirs:",
+        "titleAccent": "Pininfarina",
+        "sub": "The design dynasty builds its own at last — the 1,900 hp electric Battista, named for the founder."
+      },
+      "theme": {
+        "accent": "#5b6fd8",
+        "familyAccents": {},
+        "background": "#121316",
+        "panel": "#1a1c20",
+        "ivory": "#eae7e0",
+        "displayFont": "'Bodoni Moda', 'Didot', serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave"
+      }
+    },
+    {
       "id": "bac",
       "name": "BAC",
       "country": "United Kingdom",
@@ -746,6 +866,31 @@
         "panel": "#1a1c20",
         "ivory": "#eae7e0",
         "displayFont": "'Titillium Web', 'Arial', sans-serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave"
+      }
+    },
+    {
+      "id": "hispano-suiza",
+      "name": "Hispano Suiza",
+      "country": "Spain",
+      "founded": 1904,
+      "tagline": "The stork of Barcelona, reborn",
+      "data": "data/hispano-suiza.json",
+      "hero": {
+        "kicker": "LA BELLE ÉPOQUE ARCHIVE · BARCELONA",
+        "titlePrefix": "The Stork of",
+        "titleAccent": "Hispano Suiza",
+        "sub": "Pre-war aviation royalty returned as an electric grand tourer — the Carmen, named for the founder’s heiress."
+      },
+      "theme": {
+        "accent": "#d4c08a",
+        "familyAccents": {},
+        "background": "#121316",
+        "panel": "#1a1c20",
+        "ivory": "#eae7e0",
+        "displayFont": "'Poiret One', 'Futura', sans-serif",
         "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
         "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
         "texture": "carbon-weave"
@@ -852,25 +997,25 @@
       }
     },
     {
-      "id": "nilu27",
-      "name": "Nilu27",
-      "country": "United States",
-      "founded": 2023,
-      "tagline": "Analog rebellion by Sasha Selipanov",
-      "data": "data/nilu27.json",
+      "id": "aspark",
+      "name": "Aspark",
+      "country": "Japan",
+      "founded": 2005,
+      "tagline": "The electric Owl of Osaka",
+      "data": "data/aspark.json",
       "hero": {
-        "kicker": "ANALOG HYPERCAR ATELIER · CALIFORNIA",
-        "titlePrefix": "The Rebellion of",
-        "titleAccent": "NILU27",
-        "sub": "The designer of the Chiron and Nevera goes analog — a gated-manual V12 with zero screens and total conviction."
+        "kicker": "ELECTRIC OWL ARCHIVE · OSAKA",
+        "titlePrefix": "The Owl from",
+        "titleAccent": "Aspark",
+        "sub": "An Osaka engineering firm’s 2,012 hp Owl — under a meter tall, and one of the quickest machines ever built."
       },
       "theme": {
-        "accent": "#d0606a",
+        "accent": "#8f5fd8",
         "familyAccents": {},
         "background": "#121316",
         "panel": "#1a1c20",
         "ivory": "#eae7e0",
-        "displayFont": "'Marcellus', 'Times New Roman', serif",
+        "displayFont": "'Michroma', 'Arial Narrow', sans-serif",
         "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
         "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
         "texture": "carbon-weave"
@@ -902,25 +1047,25 @@
       }
     },
     {
-      "id": "aspark",
-      "name": "Aspark",
-      "country": "Japan",
-      "founded": 2005,
-      "tagline": "The electric Owl of Osaka",
-      "data": "data/aspark.json",
+      "id": "nilu27",
+      "name": "Nilu27",
+      "country": "United States",
+      "founded": 2023,
+      "tagline": "Analog rebellion by Sasha Selipanov",
+      "data": "data/nilu27.json",
       "hero": {
-        "kicker": "ELECTRIC OWL ARCHIVE · OSAKA",
-        "titlePrefix": "The Owl from",
-        "titleAccent": "Aspark",
-        "sub": "An Osaka engineering firm’s 2,012 hp Owl — under a meter tall, and one of the quickest machines ever built."
+        "kicker": "ANALOG HYPERCAR ATELIER · CALIFORNIA",
+        "titlePrefix": "The Rebellion of",
+        "titleAccent": "NILU27",
+        "sub": "The designer of the Chiron and Nevera goes analog — a gated-manual V12 with zero screens and total conviction."
       },
       "theme": {
-        "accent": "#8f5fd8",
+        "accent": "#d0606a",
         "familyAccents": {},
         "background": "#121316",
         "panel": "#1a1c20",
         "ivory": "#eae7e0",
-        "displayFont": "'Michroma', 'Arial Narrow', sans-serif",
+        "displayFont": "'Marcellus', 'Times New Roman', serif",
         "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
         "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
         "texture": "carbon-weave"
@@ -1021,6 +1166,31 @@
         "panel": "#1a1c20",
         "ivory": "#eae7e0",
         "displayFont": "'Michroma', 'Arial Narrow', sans-serif",
+        "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
+        "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
+        "texture": "carbon-weave"
+      }
+    },
+    {
+      "id": "volkswagen",
+      "name": "Volkswagen",
+      "country": "Germany",
+      "founded": 1937,
+      "tagline": "The ID.R — Pikes Peak, rewritten",
+      "data": "data/volkswagen.json",
+      "hero": {
+        "kicker": "RECORD PROTOTYPE · WOLFSBURG",
+        "titlePrefix": "The Record of",
+        "titleAccent": "Volkswagen",
+        "sub": "One entry, one purpose: the electric ID.R took the outright Pikes Peak record from a century of combustion in 2018."
+      },
+      "theme": {
+        "accent": "#5aa9e6",
+        "familyAccents": {},
+        "background": "#0f1215",
+        "panel": "#161a1f",
+        "ivory": "#e9edf1",
+        "displayFont": "'Archivo', 'Arial', sans-serif",
         "bodyFont": "'Inter', -apple-system, system-ui, sans-serif",
         "monoFont": "'IBM Plex Mono', ui-monospace, monospace",
         "texture": "carbon-weave"
