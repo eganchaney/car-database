@@ -76,7 +76,15 @@ Card grids (brand pages, home page, the gallery strip) are served a generated
 own page shows your original file untouched. `public/thumbs/` is generated and
 gitignored; `public/images/` is never modified.
 
-Files that don't match any car slug are reported in the build log and skipped.
+**Filenames don't have to be exact.** The build matches loosely, forgiving
+capitals, underscores and spaces, a repeated brand name, a trailing `-1`,
+accents, and partial names — `Koenigsegg-CCR-1.webp`, `1962 Ferrari 250 GTO
+(red).jpg`, and `pagani_zonda_revolucion.jpg` all find their car. Model
+numbers must still agree, so an F40 photo can never land on the F50.
+
+When a name genuinely fits two cars, it is reported in the build log with the
+closest match rather than guessed — rename it to the exact slug to settle it.
+Run `npm test` to exercise the matching rules.
 
 To upload through GitHub web, go straight to the brand folder's upload page —
 `github.com/<you>/car-database/upload/main/public/images/<brand>` — and drop
