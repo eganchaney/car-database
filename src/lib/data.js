@@ -56,6 +56,27 @@ export function numOf(v) {
   return m ? parseFloat(m[0].replace(/,/g, '')) : null
 }
 
+// A target or a simulation isn't an achieved figure, so it shouldn't win a
+// comparison or top a leaderboard. Such values still display, they just don't
+// rank.
+// "simulat" covers simulated/simulation/simulations; the Bugatti Bolide's
+// "circuit-geared (concept simulations exceeded 300)" is not a top speed.
+const UNVERIFIED = /unverified|simulat|targeting|theoretical|projected|concept/i
+export const verifiedNum = raw =>
+  (typeof raw === 'string' && UNVERIFIED.test(raw) ? null : numOf(raw))
+
+// Money out of prose: "$70M+ (private sale 2018)" → 70000000,
+// "$4–5M (est.)" → 4000000, "~$1,460,000" → 1460000, "Undisclosed" → null.
+export function moneyOf(value) {
+  if (value == null) return null
+  const m = /[$€£]\s?([\d,]+(?:\.\d+)?)(?:\s*[–—-]\s*[\d,.]+)?\s*([MBK])?/i.exec(String(value))
+  if (!m) return null
+  const n = parseFloat(m[1].replace(/,/g, ''))
+  if (!isFinite(n)) return null
+  const scale = { m: 1e6, b: 1e9, k: 1e3 }[(m[2] || '').toLowerCase()] || 1
+  return n * scale
+}
+
 // Compact display for card stats: parsed number or an em dash.
 export function statOf(v) {
   const n = numOf(v)

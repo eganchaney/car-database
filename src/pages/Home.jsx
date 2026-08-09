@@ -37,8 +37,14 @@ export default function Home() {
         <h1>The Car <em>Database</em></h1>
         <p className="sub">
           Every car in here earned its place. Pick a brand to enter its world, or start with
-          today's featured machine. <Link className="sub-link" to="/compare">Compare any two cars →</Link>
+          today's featured machine.
         </p>
+        <nav className="hubs">
+          <Link to="/explore">Explore all {all.length} cars</Link>
+          <Link to="/records">Record holders</Link>
+          <Link to="/compare">Compare two cars</Link>
+          <Link to="/missing">Photos still needed</Link>
+        </nav>
         <div className="statstrip">
           <span><b>{all.length}</b>cars</span>
           <span><b>{activeBrands.length}</b>{activeBrands.length === 1 ? 'brand' : 'brands'}</span>

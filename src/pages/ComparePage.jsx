@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { fetchAllCars, initials, numOf, thumbUrl, withUnit } from '../lib/data.js'
+import { fetchAllCars, initials, numOf, thumbUrl, verifiedNum, withUnit } from '../lib/data.js'
 import { applyTheme, familyAccent } from '../lib/theme.js'
 
 // Measures that can be won or lost. `better` says which direction wins; a car
@@ -43,8 +43,7 @@ const display = (value, unit) => withUnit(value, unit) ?? '—'
 // A target or a simulation isn't an achieved figure — the Jesko Absolut's
 // "unverified (simulated 330+)" shouldn't beat a measured top speed. Such
 // values are still shown, they just don't win the row or count in the tally.
-const UNVERIFIED = /unverified|simulated|targeting|theoretical|projected/i
-const figure = raw => (typeof raw === 'string' && UNVERIFIED.test(raw) ? null : numOf(raw))
+const figure = verifiedNum
 
 export default function ComparePage() {
   const { brandA, slugA, brandB, slugB } = useParams()
