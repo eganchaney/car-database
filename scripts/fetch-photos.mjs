@@ -15,7 +15,9 @@ const ROOT = path.resolve(import.meta.dirname, '..')
 const DATA = path.join(ROOT, 'public', 'data')
 const IMG = path.join(ROOT, 'public', 'images')
 const API = 'https://commons.wikimedia.org/w/api.php'
-const WIDTH = 2000
+// Car pages show the hero at 920px, so 1600 is still sharp on a retina
+// screen. It also keeps ~500 photos to a few hundred MB rather than a GB.
+const WIDTH = 1600
 const UA = 'CarDatabase/1.0 (personal project; https://github.com/eganchaney/car-database)'
 
 // Pictures of a detail, a badge or a museum placard are no use as a hero shot.
