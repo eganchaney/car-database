@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { fetchAllCars, initials, numOf, thumbUrl, verifiedNum, withUnit } from '../lib/data.js'
 import { applyTheme, familyAccent } from '../lib/theme.js'
+import CarSearch from '../components/CarSearch.jsx'
 
 // Measures that can be won or lost. `better` says which direction wins; a car
 // whose value is prose ("Not published") simply doesn't compete on that row.
@@ -90,9 +91,15 @@ export default function ComparePage() {
 
       <div className="cmp">
         <div className="cmp-pickers">
-          <CarPicker all={all} chosen={left} onPick={e => choose('left', e)} label="First car" />
+          <CarSearch
+            all={all} onPick={e => choose('left', e)} label="First car"
+            placeholder={left ? left.car.model : 'Search all cars…'}
+          />
           <span className="cmp-vs">vs</span>
-          <CarPicker all={all} chosen={right} onPick={e => choose('right', e)} label="Second car" />
+          <CarSearch
+            all={all} onPick={e => choose('right', e)} label="Second car"
+            placeholder={right ? right.car.model : 'Search all cars…'}
+          />
         </div>
 
         {verdict && <p className="cmp-verdict">{verdict}</p>}
@@ -191,50 +198,5 @@ function CarHead({ entry, side }) {
       <div className="cmp-brand">{brand.name}</div>
       <div className="cmp-name">{car.model}</div>
     </Link>
-  )
-}
-
-function CarPicker({ all, chosen, onPick, label }) {
-  const [query, setQuery] = useState('')
-  const [open, setOpen] = useState(false)
-  const box = useRef(null)
-
-  useEffect(() => {
-    const away = e => { if (box.current && !box.current.contains(e.target)) setOpen(false) }
-    document.addEventListener('mousedown', away)
-    return () => document.removeEventListener('mousedown', away)
-  }, [])
-
-  const matches = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return []
-    return all
-      .filter(e => `${e.brand.name} ${e.car.model}`.toLowerCase().includes(q))
-      .slice(0, 8)
-  }, [all, query])
-
-  return (
-    <div className="cmp-picker" ref={box}>
-      <label className="plab">{label}</label>
-      <input
-        className="search cmp-search"
-        placeholder={chosen ? chosen.car.model : 'Search all cars…'}
-        value={query}
-        onChange={e => { setQuery(e.target.value); setOpen(true) }}
-        onFocus={() => setOpen(true)}
-      />
-      {open && matches.length > 0 && (
-        <ul className="cmp-results">
-          {matches.map(e => (
-            <li key={e.car.id}>
-              <button onClick={() => { onPick(e); setQuery(''); setOpen(false) }}>
-                <span>{e.car.model}</span>
-                <span className="cmp-result-meta">{e.brand.name} · {e.car.year}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
   )
 }

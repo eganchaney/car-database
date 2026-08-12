@@ -255,7 +255,11 @@ select,.search{background:var(--carbon2);border:1px solid var(--line);color:var(
   background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;max-height:320px;overflow-y:auto}
 .cmp-results button{width:100%;display:flex;justify-content:space-between;align-items:baseline;gap:12px;
   background:none;border:none;color:var(--ivory);text-align:left;padding:9px 12px;font-size:13.5px}
-.cmp-results button:hover{background:rgba(255,255,255,.06)}
+.cmp-results button:hover,.cmp-results button.on{background:rgba(255,255,255,.08)}
+.cmp-results button.on{box-shadow:inset 2px 0 0 var(--accent)}
+.home-search{margin-top:20px;max-width:460px;display:flex;flex-direction:column;gap:6px}
+.home-search .cmp-search{width:100%}
+.home-search .hint{margin-top:0}
 .cmp-result-meta{font-family:var(--mono);font-size:10.5px;color:var(--faint);white-space:nowrap}
 .cmp-verdict{font-family:var(--display);font-size:19px;text-align:center;margin:22px 0 18px;color:var(--ivory)}
 

@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { fetchBrands, fetchAllCars, carOfTheDay, coverUrl, initials, isOneOff } from '../lib/data.js'
 import { applyTheme, familyAccent } from '../lib/theme.js'
 import { useFavorites, useSpotted } from '../lib/marks.js'
 import CarCard from '../components/CarCard.jsx'
+import CarSearch from '../components/CarSearch.jsx'
 
 export default function Home() {
   const [brands, setBrands] = useState(null)
   const [all, setAll] = useState(null)
   const favs = useFavorites()
   const spots = useSpotted()
+  const navigate = useNavigate()
 
   useEffect(() => { applyTheme(null) }, [])
   useEffect(() => {
@@ -41,6 +43,16 @@ export default function Home() {
           Every car in here earned its place. Pick a brand to enter its world, or start with
           today's featured machine.
         </p>
+        <div className="home-search">
+          <CarSearch
+            all={all}
+            placeholder={`Search all ${all.length} cars…`}
+            onPick={e => navigate(`/${e.car.id}`)}
+            onSubmit={q => navigate(`/explore?q=${encodeURIComponent(q)}`)}
+          />
+          <span className="hint">Pick a car, or press Enter to see every match.</span>
+        </div>
+
         <nav className="hubs">
           <Link to="/explore">Explore all {all.length} cars</Link>
           <Link to="/records">Record holders</Link>
