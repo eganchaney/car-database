@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchBrands, fetchAllCars, carOfTheDay, coverUrl, initials, isOneOff } from '../lib/data.js'
 import { applyTheme, familyAccent } from '../lib/theme.js'
-import { useFavorites } from '../lib/favorites.js'
+import { useFavorites, useSpotted } from '../lib/marks.js'
 import CarCard from '../components/CarCard.jsx'
 
 export default function Home() {
   const [brands, setBrands] = useState(null)
   const [all, setAll] = useState(null)
   const favs = useFavorites()
+  const spots = useSpotted()
 
   useEffect(() => { applyTheme(null) }, [])
   useEffect(() => {
@@ -20,6 +21,7 @@ export default function Home() {
 
   const byId = new Map(all.map(e => [e.car.id, e]))
   const favEntries = favs.map(id => byId.get(id)).filter(Boolean)
+  const spotEntries = spots.map(id => byId.get(id)).filter(Boolean)
   const cotd = carOfTheDay(all)
   const newest = all.slice(-4).reverse()
   const oneOffs = all.filter(e => isOneOff(e.car)).length
@@ -42,6 +44,7 @@ export default function Home() {
         <nav className="hubs">
           <Link to="/explore">Explore all {all.length} cars</Link>
           <Link to="/records">Record holders</Link>
+          <Link to="/charts">Charts</Link>
           <Link to="/compare">Compare two cars</Link>
           <Link to="/missing">Photos still needed</Link>
         </nav>
@@ -50,6 +53,7 @@ export default function Home() {
           <span><b>{activeBrands.length}</b>{activeBrands.length === 1 ? 'brand' : 'brands'}</span>
           <span><b>{oneOffs}</b>one-offs</span>
           <span><b>{favEntries.length}</b>favorites</span>
+          <span><b>{spotEntries.length}</b>spotted</span>
         </div>
       </header>
 
@@ -86,6 +90,15 @@ export default function Home() {
           <div className="empty-note">No favorites yet — tap the ♡ on any car to pin it here.</div>
         )}
       </section>
+
+      {spotEntries.length > 0 && (
+        <section className="hsect">
+          <h2>Seen in person <span className="h2note">{spotEntries.length} of {all.length}</span></h2>
+          <div className="brandix">
+            {spotEntries.map(e => <CarCard key={e.car.id} car={e.car} brand={e.brand} showBrand />)}
+          </div>
+        </section>
+      )}
 
       <section className="hsect">
         <h2>Newest additions</h2>

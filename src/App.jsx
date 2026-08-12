@@ -7,6 +7,7 @@ import ComparePage from './pages/ComparePage.jsx'
 import ExplorePage from './pages/ExplorePage.jsx'
 import RecordsPage from './pages/RecordsPage.jsx'
 import MissingPage from './pages/MissingPage.jsx'
+import ChartsPage from './pages/ChartsPage.jsx'
 
 // Without this the browser keeps the previous page's scroll offset, which on a
 // shorter page lands the reader below all the content.
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/compare/:brandA/:slugA/vs/:brandB/:slugB" element={<ComparePage />} />
         <Route path="/explore" element={<ExplorePage />} />
         <Route path="/records" element={<RecordsPage />} />
+        <Route path="/charts" element={<ChartsPage />} />
         <Route path="/missing" element={<MissingPage />} />
         <Route path="/:brandId" element={<BrandPage />} />
         <Route path="/:brandId/:slug" element={<CarPage />} />

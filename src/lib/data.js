@@ -97,6 +97,15 @@ export function withUnit(value, unit) {
   return text
 }
 
+// Hybrid is tested first because the data writes plug-ins as "PHEV", whose
+// trailing EV would otherwise read as a full electric car.
+export function powertrainOf(car) {
+  const p = car.specs?.powertrain || ''
+  if (/hybrid|hev\b/i.test(p)) return 'hybrid'
+  if (/electric|\bev\b/i.test(p)) return 'electric'
+  return 'ice'
+}
+
 export function isOneOff(car) {
   return /one-off/i.test(car.market.status) || /^1\b/.test(String(car.market.production))
 }

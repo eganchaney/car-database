@@ -93,7 +93,11 @@ select,.search{background:var(--carbon2);border:1px solid var(--line);color:var(
 .tag.track{border-color:#8a4b4b;color:#d29090}
 .tag.oneoff{border-color:color-mix(in srgb, var(--fam,var(--accent)) 55%, transparent);color:var(--fam,var(--accent))}
 
-/* favorite heart */
+/* favorite heart + spotted mark */
+.marks{position:absolute;top:10px;right:10px;z-index:3;display:flex;flex-direction:column;gap:6px}
+.marks .fav{position:static}
+.fav.spot{font-size:13px}
+.fav.spot.on{color:var(--fam,var(--accent));border-color:var(--fam,var(--accent))}
 .fav{position:absolute;top:10px;right:10px;z-index:3;background:rgba(10,11,13,.65);border:1px solid var(--line);
   color:var(--muted);width:32px;height:32px;border-radius:50%;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;transition:color .15s, border-color .15s}
 .fav:hover{color:var(--ivory);border-color:var(--faint)}
@@ -148,6 +152,41 @@ select,.search{background:var(--carbon2);border:1px solid var(--line);color:var(
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:4vh 20px;border:none}
 .lightbox img{max-width:100%;max-height:82vh;border-radius:10px;border:1px solid var(--line)}
 .lightbox .gcredit{color:var(--muted)}
+
+/* ---------- charts ---------- */
+.charts{max-width:1000px;margin:26px auto 60px;padding:0 28px;display:flex;flex-direction:column;gap:24px}
+.chart-card{background:var(--carbon2);border:1px solid var(--line);border-radius:12px;padding:18px 20px 14px}
+.chart-card h2{font-family:var(--display);font-weight:400;font-size:21px;margin-bottom:12px;display:flex;flex-direction:column;gap:3px}
+.chart-card h2 .h2note{font-family:var(--body);font-size:13px;letter-spacing:0;text-transform:none;color:var(--muted)}
+.chart-legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;font-size:13px;color:var(--muted)}
+.chart-legend span{display:inline-flex;align-items:center;gap:7px}
+.chart-legend i{width:11px;height:11px;border-radius:50%;display:block}
+.chart-wrap{position:relative}
+.chart-svg{width:100%;height:auto;display:block;overflow:visible}
+.chart-grid{stroke:var(--line);stroke-width:1}
+.chart-axis{stroke:var(--faint);stroke-width:1}
+.chart-tick{fill:var(--faint);font-family:var(--mono);font-size:10px}
+.chart-label{fill:var(--muted);font-family:var(--body);font-size:11px;pointer-events:none}
+/* a surface-coloured ring keeps overlapping dots readable */
+.chart-dot{stroke:var(--carbon2);stroke-width:1.5;cursor:pointer;transition:r .1s}
+.chart-tip{position:absolute;transform:translate(-50%,calc(-100% - 14px));background:var(--panel);
+  border:1px solid var(--line);border-radius:8px;padding:7px 11px;pointer-events:none;white-space:nowrap;
+  display:flex;flex-direction:column;gap:1px;font-size:12.5px;z-index:5;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.chart-tip b{font-family:var(--display);font-size:14px;font-weight:400}
+.chart-tip span{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.06em}
+.chart-tip .chart-tip-value{color:var(--ivory);font-size:11.5px}
+.chart-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;flex-wrap:wrap}
+.chart-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+.chart-table th{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+.chart-table td{padding:6px 8px;border-bottom:1px solid var(--line);color:var(--muted)}
+.chart-table td:first-child{color:var(--ivory)}
+.chart-table a:hover{text-decoration:underline}
+@media(max-width:640px){
+  .charts{padding:0 14px}
+  .chart-tick{font-size:13px}
+  .chart-label{font-size:14px}
+}
 
 /* ---------- hub links on the home page ---------- */
 .hubs{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}

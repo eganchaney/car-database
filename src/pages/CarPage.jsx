@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { fetchBrands, fetchBrandData, imageUrl, thumbUrl, initials, isOneOff, withUnit } from '../lib/data.js'
 import { applyTheme, familyAccent } from '../lib/theme.js'
-import { FavHeart, Tags } from '../components/CarCard.jsx'
+import { FavHeart, SpotMark, Tags } from '../components/CarCard.jsx'
 
 function PlaqueItem({ lab, val, big = false, wide = false }) {
   if (val == null || val === '') return null
@@ -91,6 +91,7 @@ export default function CarPage() {
                 <span className="tag">{m.status}</span>}
               <Link className="tag tag-action" to={`/compare/${car.id}`}>Compare with…</Link>
               <FavHeart id={car.id} inline />
+              <SpotMark id={car.id} inline />
             </div>
 
             <div className="plaque">

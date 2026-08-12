@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { fetchAllCars, isOneOff, numOf } from '../lib/data.js'
+import { fetchAllCars, isOneOff, numOf, powertrainOf } from '../lib/data.js'
 import { applyTheme } from '../lib/theme.js'
+import { useSpotted } from '../lib/marks.js'
 import CarCard from '../components/CarCard.jsx'
 
 // Ways of slicing the whole database that cut across marques — the thing a
@@ -11,11 +12,8 @@ const COLLECTIONS = [
   { id: 'one-offs', label: 'One-offs', test: c => isOneOff(c) },
   { id: 'track', label: 'Track only', test: c => c.market.road_legal === false },
   { id: 'v12', label: 'V12', test: c => /v12/i.test(c.specs.engine || '') },
-  // "\bev\b" deliberately excludes PHEV — a plug-in hybrid is not an EV — and
-  // those cars are caught by the hybrid test instead, which the plain word
-  // "hybrid" would miss since the data writes them as "PHEV, 8-speed DCT".
-  { id: 'electric', label: 'Electric', test: c => /electric|\bev\b/i.test(c.specs.powertrain || '') },
-  { id: 'hybrid', label: 'Hybrid', test: c => /hybrid|hev\b/i.test(c.specs.powertrain || '') },
+  { id: 'electric', label: 'Electric', test: c => powertrainOf(c) === 'electric' },
+  { id: 'hybrid', label: 'Hybrid', test: c => powertrainOf(c) === 'hybrid' },
 ]
 
 const SORTS = {
@@ -33,6 +31,7 @@ export default function ExplorePage() {
   const [params, setParams] = useSearchParams()
   const [all, setAll] = useState(null)
   const [shown, setShown] = useState(PAGE)
+  const spotted = useSpotted()
 
   const q = params.get('q') || ''
   const collection = params.get('c') || 'all'
@@ -56,17 +55,22 @@ export default function ExplorePage() {
   const results = useMemo(() => {
     if (!all) return []
     const needle = q.trim().toLowerCase()
-    const test = (COLLECTIONS.find(c => c.id === collection) || COLLECTIONS[0]).test
+    // "Spotted" lives in localStorage rather than the data, so it can't be a
+    // static predicate like the rest.
+    const test = collection === 'spotted'
+      ? car => spotted.includes(car.id)
+      : (COLLECTIONS.find(c => c.id === collection) || COLLECTIONS[0]).test
     return all
       .filter(e => test(e.car))
       .filter(e => !needle || `${e.brand.name} ${e.car.model}`.toLowerCase().includes(needle))
       .sort(SORTS[sort] || SORTS.year)
-  }, [all, q, collection, sort])
+  }, [all, q, collection, sort, spotted])
 
   if (!all) return <div className="loading">Loading all 39 brands…</div>
 
   const counts = Object.fromEntries(
     COLLECTIONS.map(c => [c.id, all.filter(e => c.test(e.car)).length]))
+  counts.spotted = spotted.length
 
   return (
     <>
@@ -83,7 +87,7 @@ export default function ExplorePage() {
       </header>
 
       <div className="controls">
-        {COLLECTIONS.map(c => (
+        {[...COLLECTIONS, ...(spotted.length ? [{ id: 'spotted', label: 'Spotted' }] : [])].map(c => (
           <button
             key={c.id}
             className={`chip${collection === c.id ? ' on' : ''}`}

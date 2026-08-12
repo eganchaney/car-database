@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { coverUrl, initials, isOneOff, statOf } from '../lib/data.js'
 import { familyAccent } from '../lib/theme.js'
-import { toggleFavorite, useFavorites } from '../lib/favorites.js'
+import { toggleFavorite, toggleSpotted, useFavorites, useSpotted } from '../lib/marks.js'
 
 export function Tags({ car }) {
   return (
@@ -25,6 +25,20 @@ export function FavHeart({ id, inline = false }) {
   )
 }
 
+// Cars you've seen in person — the thing that turns a catalogue into a diary.
+export function SpotMark({ id, inline = false }) {
+  const spotted = useSpotted()
+  const on = spotted.includes(id)
+  return (
+    <button
+      className={`fav spot${on ? ' on' : ''}${inline ? ' inline' : ''}`}
+      aria-label={on ? 'Remove spotted mark' : 'Mark as spotted in person'}
+      title={on ? 'Spotted in person' : 'Mark as spotted in person'}
+      onClick={e => { e.preventDefault(); e.stopPropagation(); toggleSpotted(id) }}
+    >{on ? '◉' : '○'}</button>
+  )
+}
+
 export default function CarCard({ car, brand, showBrand = false }) {
   const cover = coverUrl(car)
   const fam = familyAccent(brand, car.family)
@@ -36,7 +50,10 @@ export default function CarCard({ car, brand, showBrand = false }) {
           ? <img src={cover} alt={car.model} loading="lazy" />
           : <div className="mono-mark">{initials(car)}</div>}
       </div>
-      <FavHeart id={car.id} />
+      <div className="marks">
+        <FavHeart id={car.id} />
+        <SpotMark id={car.id} />
+      </div>
       <div className="cbody">
         {showBrand && <div className="cbrand">{brand.name}</div>}
         <div className="crow">
